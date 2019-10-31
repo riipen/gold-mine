@@ -1,7 +1,6 @@
 import Position from "./position.js";
 
-let movedRight;
-
+let lastMove; // keeps track of what the last move was
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
@@ -17,23 +16,66 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
 
-  const newX = (position && position.x + 1) || 0;
+  // calculate optimal initial position
+  if (typeof position === 'undefined'){
+    let startX = 0;
+    let startY = 0;    
+    let maxFirst = mine[0][0];
+    let maxSecond = Math.max(mine[0][1],mine[1][1]);
+    let i = 0;
+    while (i < mine.length){
+      if(mine[i][0] > maxFirst){
+        maxFirst = mine[i][0];
+        startY = i;
 
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
+        /* highest first with a highest second; Alternative lookahead method but decided not to use it bc it gives lower scores on mars
+        if(mine[i][0] > maxFirst){
+          maxFirst = mine[i][0];
+          startY = i;
+        }else{ //same first value
+          if(i > 0 && mine[i-1][1] !== 'undefined' && mine[i-1][1] > maxSecond){
+            maxSecond = mine[i-1][1];
+            startY = i;
+          }
+          if(mine[i][1] !== 'undefined' && mine[i][1] > maxSecond){
+            maxSecond = mine[i][1];
+            startY = i;
+          }
+          if(mine[i+1][1] !== 'undefined' && mine[i+1][1] > maxSecond){
+            maxSecond = mine[i+1][1];
+            startY = i;
+          }
+        }*/
+      }
+      i += 1;
+    }
+    console.log(startY);
+    return new Position(startX, startY);
   }
+
+  // go to the most optimal next step
+  let newY = 0;
+  let maxGold = 0;
+  
+  let newX = position.x+1; //always move forward
+  if(lastMove !== 0){ //we didnt move right before
+    maxGold = mine[position.y][position.x+1]
+    newY = position.y;
+  }  
+  if(position.y+1 < mine.length && lastMove!== 2 && mine[position.y+1][position.x+1] > maxGold){ //take the lower gold
+    newY = position.y+1;
+    maxGold = mine[position.y+1][position.x+1];
+  }
+  if(position.y-1 >= 0 && lastMove!== 1 && mine[position.y-1][position.x+1] > maxGold){ //take the upper gold
+    newY = position.y-1;
+    maxGold = mine[position.y-1][position.x+1];
+  }
+  
+  //update last move
+  if(newY == position.y) lastMove = 0;
+  else if(newY == position.y+1) lastMove = 2;
+  else if (newY == position.y-1) lastMove = 1;
 
   return new Position(newX, newY);
 };
