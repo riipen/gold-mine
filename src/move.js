@@ -1,7 +1,9 @@
 import Position from "./position.js";
 
 let movedRight;
-
+let movedUp;
+let movedDown;
+let moveNumber;
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
@@ -16,25 +18,73 @@ let movedRight;
  *
  * @return {Position} The new position of the miner.
  */
+
+const checkMove = (lastDriection, xpos, ypos, mine,) => {
+  let next = {
+    right: 0,
+    up: 0,
+    down: 0,
+    biggest: ypos
+  };
+  if (lastDriection === 'RIGHT') {
+    next.biggest = ypos + 1 
+  }
+  if (lastDriection !== 'UP' && ypos >= 1) {
+    next.up = mine[ypos - 1][xpos + 1]
+  }
+  if (lastDriection !== 'RIGHT') {
+    next.right = mine[ypos][xpos + 1]
+  }
+  if (lastDriection !== 'DOWN' && ypos <= mine.length - 2) {
+    next.down = mine[ypos + 1][xpos + 1]
+  }
+  movedUp = false;
+  movedRight = false;
+  movedDown = false;
+  if (next.up > next.down) {
+    if (next.up > next.right) {
+      next.biggest = ypos - 1
+      movedUp = true;
+    } else {
+      movedRight = true;
+    }
+  } else {
+    if (next.down > next.right) {
+      next.biggest = ypos + 1
+
+      movedDown = true;
+    } else {
+      movedRight = true;
+    }
+  }
+  return next.biggest
+}
+
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
+
 
   const newX = (position && position.x + 1) || 0;
-
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
+  if (newX === mine.length) {
+    if (!movedRight) {
+      return new Position(newX, position.y)
+    } else {
+      return new Position(newX, position.y + 1)
+    }
   }
-
+  let newY;
+  if (!position) {
+    newY = Math.round(mine.length /2) ; // TODO logic to chose starting location 
+    movedRight = true;
+    moveNumber = 0;
+  } else if (movedRight) {
+    newY = checkMove('RIGHT', position.x, position.y, mine)
+  } else if (movedUp) {
+    newY = checkMove('UP', position.x, position.y, mine)
+  } else if (movedDown) {
+    newY = checkMove('DOWN', position.x, position.y, mine)
+  }
+  moveNumber++;
+  // console.log('MOVE:', moveNumber, '\nCurrent Position { x:', newX, 'y:', newY, '}')
   return new Position(newX, newY);
 };
 
