@@ -3,7 +3,6 @@ import Position from "./position.js";
 let movedRight;
 let movedUp;
 let movedDown;
-let moveNumber;
 let possibilities;
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -50,6 +49,7 @@ const checkMove = (lastDirection, xpos, ypos, mine, ) => {
   movedRight = false;
   movedDown = false;
 
+  // Decide which position has the most possibilities, then check which has the highest score
   switch (lastDirection) {
     case 'UP':
       if (next.rightOptions === next.downOptions && next.right > 0 && next.down > 0) {
@@ -111,9 +111,9 @@ const checkMove = (lastDirection, xpos, ypos, mine, ) => {
   }
   return next.biggest
 }
+
 const checkAhead = (lastDirection, xpos, ypos, mine) => {
   possibilities = 0;
-
   if (lastDirection !== 'UP' && ypos >= 1) {
     if (mine[ypos - 1][xpos + 1] > 0) {
       possibilities++;
@@ -133,8 +133,6 @@ const checkAhead = (lastDirection, xpos, ypos, mine) => {
 }
 
 const move = (mine, position) => {
-
-
   const newX = (position && position.x + 1) || 0;
   if (newX === mine.length) {
     if (!movedRight) {
@@ -145,10 +143,9 @@ const move = (mine, position) => {
   }
   let newY;
 
-  if (!position) {
-    newY = Math.floor(mine.length / 2); // Start in the middle of the map
+  if (!position) { // Set first move - start in middle of the map
+    newY = Math.floor(mine.length / 2);
     movedRight = true;
-    moveNumber = 0;
   } else if (movedRight) {
     newY = checkMove('RIGHT', position.x, position.y, mine)
   } else if (movedUp) {
@@ -156,8 +153,7 @@ const move = (mine, position) => {
   } else if (movedDown) {
     newY = checkMove('DOWN', position.x, position.y, mine)
   }
-  moveNumber++;
-  // console.log('MOVE:', moveNumber, '\nCurrent Position { x:', newX, 'y:', newY, '}')
+  
   return new Position(newX, newY);
 };
 
