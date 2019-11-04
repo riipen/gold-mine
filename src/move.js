@@ -4,6 +4,7 @@ let movedRight;
 let movedUp;
 let movedDown;
 let moveNumber;
+let possibilities;
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
@@ -19,45 +20,116 @@ let moveNumber;
  * @return {Position} The new position of the miner.
  */
 
-const checkMove = (lastDriection, xpos, ypos, mine,) => {
+
+const checkMove = (lastDirection, xpos, ypos, mine, ) => {
   let next = {
-    right: 0,
     up: 0,
+    right: 0,
     down: 0,
-    biggest: ypos
+    biggest: ypos,
+    upOptions: 0,
+    rightOptions: 0,
+    downOptions: 0
   };
-  if (lastDriection === 'RIGHT') {
-    next.biggest = ypos + 1 
+  if (lastDirection === 'RIGHT') {
+    next.biggest = ypos + 1
   }
-  if (lastDriection !== 'UP' && ypos >= 1) {
+  if (lastDirection !== 'UP' && ypos >= 1) {
     next.up = mine[ypos - 1][xpos + 1]
+    next.upOptions = checkAhead('UP', xpos + 1, ypos - 1, mine, 0)
   }
-  if (lastDriection !== 'RIGHT') {
+  if (lastDirection !== 'RIGHT') {
     next.right = mine[ypos][xpos + 1]
+    next.rightOptions = checkAhead('RIGHT', xpos + 1, ypos, mine, 0)
   }
-  if (lastDriection !== 'DOWN' && ypos <= mine.length - 2) {
+  if (lastDirection !== 'DOWN' && ypos <= mine.length - 2) {
     next.down = mine[ypos + 1][xpos + 1]
+    next.downOptions = checkAhead('DOWN', xpos + 1, ypos + 1, mine, 0)
   }
   movedUp = false;
   movedRight = false;
   movedDown = false;
-  if (next.up > next.down) {
-    if (next.up > next.right) {
-      next.biggest = ypos - 1
-      movedUp = true;
-    } else {
-      movedRight = true;
-    }
-  } else {
-    if (next.down > next.right) {
-      next.biggest = ypos + 1
 
-      movedDown = true;
-    } else {
-      movedRight = true;
-    }
+  switch (lastDirection) {
+    case 'UP':
+      if (next.rightOptions === next.downOptions && next.right > 0 && next.down > 0) {
+        if (next.right > next.down) {
+          next.biggest = ypos;
+          movedRight = true;
+        } else {
+          next.biggest = ypos + 1;
+          movedDown = true
+        }
+      } else {
+        if (next.rightOptions >= next.downOptions && next.right > 0) {
+          next.biggest = ypos;
+          movedRight = true;
+        } else {
+          next.biggest = ypos + 1;
+          movedDown = true;
+        }
+      }
+      break;
+    case 'RIGHT':
+      if (next.upOptions === next.downOptions && next.up > 0 && next.down > 0) {
+        if (next.up > next.down) {
+          next.biggest = ypos - 1;
+          movedUp = true;
+        } else {
+          next.biggest = ypos + 1;
+          movedDown = true
+        }
+      } else {
+        if (next.upOptions >= next.downOptions && next.up > 0) {
+          next.biggest = ypos - 1;
+          movedUp = true;
+        } else {
+          next.biggest = ypos + 1;
+          movedDown = true;
+        }
+      }
+      break;
+    case 'DOWN':
+      if (next.upOptions === next.rightOptions && next.up > 0 && next.right > 0) {
+        if (next.up > next.right) {
+          next.biggest = ypos - 1;
+          movedUp = true;
+        } else {
+          next.biggest = ypos;
+          movedRight = true
+        }
+      } else {
+        if (next.upOptions >= next.rightOptions && next.up > 0) {
+          next.biggest = ypos - 1;
+          movedUp = true;
+        } else {
+          next.biggest = ypos;
+          movedRight = true;
+        }
+      }
+      break;
   }
   return next.biggest
+}
+const checkAhead = (lastDirection, xpos, ypos, mine) => {
+  possibilities = 0;
+
+  if (lastDirection !== 'UP' && ypos >= 1) {
+    if (mine[ypos - 1][xpos + 1] > 0) {
+      possibilities++;
+    }
+  }
+  if (lastDirection !== 'RIGHT') {
+    if (mine[ypos][xpos + 1] > 0) {
+      possibilities++;
+    }
+  }
+  if (lastDirection !== 'DOWN' && ypos <= mine.length - 2) {
+    if (mine[ypos + 1][xpos + 1] > 0) {
+      possibilities++;
+    }
+  }
+  return possibilities
 }
 
 const move = (mine, position) => {
@@ -72,8 +144,9 @@ const move = (mine, position) => {
     }
   }
   let newY;
+
   if (!position) {
-    newY = Math.round(mine.length /2) ; // TODO logic to chose starting location 
+    newY = Math.floor(mine.length / 2); // Start in the middle of the map
     movedRight = true;
     moveNumber = 0;
   } else if (movedRight) {
