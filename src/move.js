@@ -41,18 +41,18 @@ const move = (mine, position) => {
 
     (newX === 0 && newY === 0 ? newX = 1 : newX = position.x + 1)
 
-    console.log("PrevX", newX, "PrevY", newY, "prevMove", prevMove)
+    console.log("PrevX", newX, "PrevY", newY, "previousMove", previousMove)
     const array = [-1, mine[newY][newX], mine[newY + 1][newX]]
     console.log("newY ARRAY", array)
     let findMax = array.indexOf((Math.max(...array)))
-    if (prevMove === findMax) {
+    if (previousMove === findMax) {
       array[findMax] = 0
       findMax = array.indexOf((Math.max(...array)))
-      console.log("findMax", findMax, "prevMove", prevMove)
+      console.log("findMax", findMax, "previousMove", previousMove)
     }
     newY = getY(findMax, newY)
-    prevMove = findMax
-    console.log("newY", newY, "newX", newX, "prevMove", prevMove, "findMax", findMax)
+    previousMove = findMax
+    console.log("newY", newY, "newX", newX, "previousMove", previousMove, "findMax", findMax)
 
   } else if (newY === mine.length - 1) {
 
@@ -61,13 +61,31 @@ const move = (mine, position) => {
     const array = [mine[newY - 1][newX], mine[newY][newX], -1]
     console.log("mine length ARRAY", array)
     let findMax = array.indexOf((Math.max(...array)))
-    if (prevMove === findMax) {
+    if (previousMove === findMax) {
       array[findMax] = 0
       findMax = array.indexOf((Math.max(...array)))
     }
     newY = getY(findMax, newY)
-    prevMove = findMax
-    console.log("newY", newY, "newX", newX, "prevMove", prevMove, "findMax", findMax)
+    previousMove = findMax
+    console.log("newY", newY, "newX", newX, "previousMove", previousMove, "findMax", findMax)
+
+  } else {
+
+    newX = (position !== undefined && position.x !== undefined) ? position.x + 1 : 1
+    const array = [mine[newY - 1][newX], mine[newY][newX], mine[newY + 1][newX]]
+    console.log("else ARRAY", array)
+
+    let findMax = array.indexOf((Math.max(...array)))
+
+    if (previousMove === findMax) {
+      array[findMax] = 0
+      findMax = array.indexOf((Math.max(...array)))
+    }
+    newY = getY(findMax, newY)
+    previousMove = findMax
+
+    console.log("newY", newY, "newX", newX, "previousMove", previousMove, "findMax", findMax)
+  }
 
   return new Position(newX, newY);
 };
