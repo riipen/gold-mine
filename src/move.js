@@ -54,6 +54,20 @@ const move = (mine, position) => {
     prevMove = findMax
     console.log("newY", newY, "newX", newX, "prevMove", prevMove, "findMax", findMax)
 
+  } else if (newY === mine.length - 1) {
+
+    newX = (position !== undefined && position.x !== undefined) ? position.x + 1 : 1
+
+    const array = [mine[newY - 1][newX], mine[newY][newX], -1]
+    console.log("mine length ARRAY", array)
+    let findMax = array.indexOf((Math.max(...array)))
+    if (prevMove === findMax) {
+      array[findMax] = 0
+      findMax = array.indexOf((Math.max(...array)))
+    }
+    newY = getY(findMax, newY)
+    prevMove = findMax
+    console.log("newY", newY, "newX", newX, "prevMove", prevMove, "findMax", findMax)
 
   return new Position(newX, newY);
 };
