@@ -25,21 +25,35 @@ const move = (mine, position) => {
   //Initial position of Y
   let startY = 0 //findStartY(mine);
 
-  
+  //Initialized newX to position.x  or set to 0 when undefined
   let newX = (position !== undefined && position.x !== undefined) ? position.x + 1 : 0;
   
+  //Initialized newY to position.y or set to startY when undefined
   let newY = (position !== undefined && position.y !== undefined) ? position.y : startY;
   
-  
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
 
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
+  // newY = (position && position.y) || startY;
+  console.log("ANNE", position && position.y)
+  console.log("OURS current Y", newY, position)
+  if (newX !== 0 && newY !== 2) { console.log("h", position.y) }
 
-    movedRight = false;
-  }
+  if (newY === 0) {
+
+    (newX === 0 && newY === 0 ? newX = 1 : newX = position.x + 1)
+
+    console.log("PrevX", newX, "PrevY", newY, "prevMove", prevMove)
+    const array = [-1, mine[newY][newX], mine[newY + 1][newX]]
+    console.log("newY ARRAY", array)
+    let findMax = array.indexOf((Math.max(...array)))
+    if (prevMove === findMax) {
+      array[findMax] = 0
+      findMax = array.indexOf((Math.max(...array)))
+      console.log("findMax", findMax, "prevMove", prevMove)
+    }
+    newY = getY(findMax, newY)
+    prevMove = findMax
+    console.log("newY", newY, "newX", newX, "prevMove", prevMove, "findMax", findMax)
+
 
   return new Position(newX, newY);
 };
