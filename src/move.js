@@ -3,6 +3,15 @@ import Position from "./position.js";
 //Tracks the previous move of the miner
 let previousMove;
 
+//Get the y position
+const getY = (index, y) => {
+  switch (index) {
+    case 0: return y - 1;
+    case 1: return y;
+    case 2: return y + 1;
+
+  }
+}
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
