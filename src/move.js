@@ -12,6 +12,16 @@ const getY = (index, y) => {
 
   }
 }
+
+//Finds the first maximum number in a row for the initial position
+const findStartY = (mine) => {
+  const mineArray = mine.map((array, i) => {
+    return (array[0])
+  })
+  const index = mineArray.indexOf(Math.max(...mineArray))
+  return index;
+}
+
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
