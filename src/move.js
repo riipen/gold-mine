@@ -1,6 +1,7 @@
 import Position from "./position.js";
 
-let movedRight;
+//Tracks the previous move of the miner
+let previousMove;
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -21,10 +22,15 @@ const move = (mine, position) => {
   //   1. Start at (0,0)
   //   2. Always moves right
 
-  const newX = (position && position.x + 1) || 0;
+  //Initial position of Y
+  let startY = 0 //findStartY(mine);
 
-  let newY;
-
+  
+  let newX = (position !== undefined && position.x !== undefined) ? position.x + 1 : 0;
+  
+  let newY = (position !== undefined && position.y !== undefined) ? position.y : startY;
+  
+  
   if (!movedRight) {
     newY = (position && position.y) || 0;
 
