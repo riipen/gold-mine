@@ -19,7 +19,7 @@ const run = async (mine, logFile, yStart = 0) => {
   let position = await move(mine);
 
   // Track where the current X value should be
-  let currentX = 0;
+  let currentX = position.x;
 
   // A running tally of the score
   let score = mine[position.y][position.x];
