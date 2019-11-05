@@ -1,6 +1,7 @@
 import Position from "./position.js";
+import { getNewDirection, getInitialPosition } from './movehelper.js';
 
-let movedRight;
+let prevDirection;
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -17,23 +18,21 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
+// This is a greedy miner that does not think far into the future. It does the following:
+  // 1. Start at (0,0)
+  // 2. Chooses the highest available gold value each time.
 
   const newX = (position && position.x + 1) || 0;
+  const initY = position && position.y !== undefined ? position.y : getInitialPosition(mine);
 
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
-  }
+  // gets new direction if not starting position
+  const newDirection = (position && position.y !== undefined) ?
+    getNewDirection(mine, position, prevDirection) 
+      : undefined;
+  
+  const newY = newDirection ? initY + newDirection : initY;
+ 
+  prevDirection = newDirection;
 
   return new Position(newX, newY);
 };
