@@ -11,7 +11,7 @@ import move from "./move.js";
  *
  * @return {Number} The total gold collected by the miner.
  */
-const run = async (mine, logFile, yStart = 0) => {
+const run = async (mine, logFile, yStart) => {
   if (!mine) throw new Error("a mine is required");
   if (!logFile) throw new Error("a logFile is required");
 
