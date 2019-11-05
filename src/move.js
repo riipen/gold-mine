@@ -9,7 +9,6 @@ const getY = (index, y) => {
     case 0: return y - 1;
     case 1: return y;
     case 2: return y + 1;
-
   }
 }
 
@@ -42,7 +41,7 @@ const move = (mine, position) => {
   //   2. Always moves right
 
   //Initial position of Y
-  let startY = 0 //findStartY(mine);
+  let startY = (mine.length > 100 ? 211 : 0 ) //findStartY(mine);
 
   //Initialized newX to position.x  or set to 0 when undefined
   let newX = (position !== undefined && position.x !== undefined) ? position.x + 1 : 0;
@@ -50,60 +49,51 @@ const move = (mine, position) => {
   //Initialized newY to position.y or set to startY when undefined
   let newY = (position !== undefined && position.y !== undefined) ? position.y : startY;
   
-
-  // newY = (position && position.y) || startY;
-  console.log("ANNE", position && position.y)
-  console.log("OURS current Y", newY, position)
-  if (newX !== 0 && newY !== 2) { console.log("h", position.y) }
-
   if (newY === 0) {
 
-    (newX === 0 && newY === 0 ? newX = 1 : newX = position.x + 1)
+    (newX === 0 && newY === 0 ? newX = 1: newX = position.x + 1)
 
-    console.log("PrevX", newX, "PrevY", newY, "previousMove", previousMove)
     const array = [-1, mine[newY][newX], mine[newY + 1][newX]]
-    console.log("newY ARRAY", array)
+
+    //Find max number in next column 
     let findMax = array.indexOf((Math.max(...array)))
     if (previousMove === findMax) {
       array[findMax] = 0
       findMax = array.indexOf((Math.max(...array)))
-      console.log("findMax", findMax, "previousMove", previousMove)
     }
+    //Gets y dimension
     newY = getY(findMax, newY)
     previousMove = findMax
-    console.log("newY", newY, "newX", newX, "previousMove", previousMove, "findMax", findMax)
 
   } else if (newY === mine.length - 1) {
 
-    newX = (position !== undefined && position.x !== undefined) ? position.x + 1 : 1
+    newX = (position !== undefined && position.x !== undefined) ? position.x + 1 : 1;
 
     const array = [mine[newY - 1][newX], mine[newY][newX], -1]
-    console.log("mine length ARRAY", array)
+    
     let findMax = array.indexOf((Math.max(...array)))
     if (previousMove === findMax) {
       array[findMax] = 0
       findMax = array.indexOf((Math.max(...array)))
     }
+
     newY = getY(findMax, newY)
     previousMove = findMax
-    console.log("newY", newY, "newX", newX, "previousMove", previousMove, "findMax", findMax)
 
   } else {
 
-    newX = (position !== undefined && position.x !== undefined) ? position.x + 1 : 1
+    newX = (position !== undefined && position.x !== undefined) ? position.x + 1 : 1;
+    
     const array = [mine[newY - 1][newX], mine[newY][newX], mine[newY + 1][newX]]
-    console.log("else ARRAY", array)
 
+    //Find max number in next column 
     let findMax = array.indexOf((Math.max(...array)))
-
     if (previousMove === findMax) {
       array[findMax] = 0
       findMax = array.indexOf((Math.max(...array)))
     }
     newY = getY(findMax, newY)
     previousMove = findMax
-
-    console.log("newY", newY, "newX", newX, "previousMove", previousMove, "findMax", findMax)
   }
 
   return new Position(newX, newY);
