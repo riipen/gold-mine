@@ -6,9 +6,9 @@ let previousMove;
 //Get the y position
 const getY = (index, y) => {
   switch (index) {
-    case 0: return y - 1;
-    case 1: return y;
-    case 2: return y + 1;
+    case 0: return y - 1; // Move diagonally right up
+    case 1: return y; // Move right
+    case 2: return y + 1; //Move diagonally right down
   }
 }
 
