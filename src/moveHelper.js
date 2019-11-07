@@ -9,7 +9,7 @@ function findOptimalSolution(mine) {
   for (let col = mine[0].length - 1; col >= 0; col--) {
     // initialize the column in the nodes map
     nodes[col] = {};
-    console.log(col);
+    console.log(`working to find optimal path... ${col} column(s) remaining`);
     if (nodes[col + 2]) {
       delete nodes[col + 2];
     }
