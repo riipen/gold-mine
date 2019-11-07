@@ -32,10 +32,10 @@
   "type": "module",
   "dependencies": {
     "esm": "^3.2.25",
-    "jest": "^24.9.0",
     "require-directory": "^2.1.1"
   },
   "devDependencies": {
+    "jest": "^24.9.0",
     "@babel/preset-env": "^7.7.1",
     "babel-core": "^6.26.3",
     "babel-jest": "^24.9.0",
