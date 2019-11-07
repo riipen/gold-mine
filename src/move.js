@@ -1,6 +1,8 @@
-import Position from "./position.js";
-
+import Position from './position.js';
+import findOptimalSolution from './moveHelper.js';
 let movedRight;
+let bestPath = {};
+let index = 0;
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -17,25 +19,24 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
-
-  const newX = (position && position.x + 1) || 0;
-
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
+  if (index === 0) {
+    // This is the first move of the mine
+    // Calculate the optimum path to maximize gold
+    bestPath = findOptimalSolution(mine);
   }
-
-  return new Position(newX, newY);
+  if (bestPath.nodes[index]) {
+    // Find the coordinates for this move
+    const coordinates = bestPath.nodes[index].split(',');
+    const newX = parseInt(coordinates[0]);
+    const newY = parseInt(coordinates[1]);
+    index++;
+    if (!bestPath.nodes[index]) {
+      // reset the index and bestPath after a mine is finished
+      index = 0;
+      bestPath = {};
+    }
+    return new Position(newX, newY);
+  }
 };
 
 export default move;
