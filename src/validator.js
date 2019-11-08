@@ -72,7 +72,7 @@ const validate = async (mine, logFile, mineScore) => {
     // Breaks out of file reading
     if (!valid) lineReader.close();
 
-    score += mine[step[1]][step[0]]
+    if(valid) score += mine[step[1]][step[0]];
 
     // Move up to the valid position
     position.x = step[0];

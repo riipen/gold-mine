@@ -16,25 +16,25 @@ let movedRight;
  *
  * @return {Position} The new position of the miner.
  */
+ 
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
+
+  const startPos = () =>{
+    return Number(Math.floor(((Math.random() * ((mine.length  / 2)) + 1))));
+  }
 
   const newX = (position && position.x + 1) || 0;
 
   let newY;
 
   if (!movedRight) {
-    newY = (position && position.y) || 0;
-
+    newY = (position && position.y) || startPos();
     movedRight = true;
   } else {
-    newY = (position && position.y + 1) || 0;
-
+    newY = (position && position.y + 1) || startPos();
     movedRight = false;
   }
-
+  
   return new Position(newX, newY);
 };
 
