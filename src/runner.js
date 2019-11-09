@@ -2,6 +2,8 @@ import fs from "fs";
 
 import move from "./move.js";
 
+import findOptimalPath from "./helpers.js";
+
 /**
  * Given a mine, runs the miner through the mine collecting gold along the way.
  *
@@ -15,8 +17,14 @@ const run = async (mine, logFile, yStart = 0) => {
   if (!mine) throw new Error("a mine is required");
   if (!logFile) throw new Error("a logFile is required");
 
+  // firstYidx holds the inital Y position
+  let firstYidx = []
+
+  // the steps to reach to high score optimally
+  let steps = findOptimalPath(mine, firstYidx)
+
   // Initial position
-  let position = await move(mine);
+  let position = await move(steps, firstYidx[0]);
 
   // Track where the current X value should be
   let currentX = 0;
@@ -34,7 +42,7 @@ const run = async (mine, logFile, yStart = 0) => {
       );
     }
 
-    position = await move(mine, position);
+    position = await move(steps, position);
     currentX++;
 
     log(logFile, position);

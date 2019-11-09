@@ -1,7 +1,5 @@
 import Position from "./position.js";
 
-let movedRight;
-
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
@@ -11,31 +9,21 @@ let movedRight;
  * Remember, landing outside the mine's boundary or on a "0" on the mine will
  * result in the run completing.
  *
- * @param  {array} mine - A n x m multidimensional array respresenting the mine.
- * @param  {object} position - The current position of the miner, will be undefined on the first move
+ * @param  {array} mineSteps - n dimensional array respresenting the steps to reach to high score optimally
+ * @param  {object} position - The current position of the miner, will be starting Y position on the first move
  *
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
+    // The first position is the starting Y location passed as a negative int
+    if(position < 0) {
+        return new Position(0, -1*position);
+    }
 
-  const newX = (position && position.x + 1) || 0;
+    let newX =  position.x + 1;
+    let newY =  position.y - mine[position.x];
 
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
-  }
-
-  return new Position(newX, newY);
+    return new Position(newX, newY);
 };
 
 export default move;
