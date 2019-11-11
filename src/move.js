@@ -1,6 +1,8 @@
 import Position from "./position.js";
+import { findBestStartY, getTopRightValue, getRightValue, getBottomRightValue, getNewPosition } from "./helpers.js";
+import Directions from "./directions.js";
 
-let movedRight;
+let lastMove;
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -17,25 +19,41 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
 
-  const newX = (position && position.x + 1) || 0;
-
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
+  // position is undefined means first move, so find best start
+  if (position === undefined) {
+    return new Position(0, findBestStartY(mine));
   }
 
-  return new Position(newX, newY);
+  let currentMove;
+  let moveOpts = [];
+  let bestValue = 0;
+  
+  // Add any valid moves and their resulting gold values
+  if (lastMove === undefined || lastMove !== Directions.TOPRIGHT)
+    moveOpts[Directions.TOPRIGHT] = getTopRightValue(mine, position);
+
+  if (lastMove  === undefined || lastMove !== Directions.RIGHT)
+    moveOpts[Directions.RIGHT] = getRightValue(mine, position);
+  
+  if (lastMove  === undefined || lastMove !== Directions.BOTRIGHT)
+    moveOpts[Directions.BOTRIGHT] = getBottomRightValue(mine, position);
+
+  // Find best move
+  Object.keys(moveOpts).forEach((direction) => {
+    if (moveOpts[direction] > bestValue) {
+      bestValue = moveOpts[direction];
+      currentMove = direction;
+    }
+  });
+
+  // No more moves left, take first available move and end mining session.
+  if (currentMove === undefined) {
+    return new Position(position.x+1, position.y+1);
+  }
+
+  lastMove = currentMove;
+  return getNewPosition(position, currentMove);
 };
 
 export default move;
