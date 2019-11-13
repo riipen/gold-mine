@@ -60,7 +60,7 @@ describe('PathFinder', () => {
       assert.deepEqual(step4, new Position(4, 1));
     });
   
-    it('Should generate correct path (complex)', () => {
+    it('Should generate correct path (moderate)', () => {
       const mine = [
         [1, 3, 7, 0, 8, 2],
         [6, 0, 4, 3, 0, 8],
@@ -87,6 +87,44 @@ describe('PathFinder', () => {
         new Position(3, 3),
         new Position(4, 2),
         new Position(5, 2)
+      ]);
+    });
+
+    it('Should generate correct path (complex)', () => {
+      const mine = [
+        [6, 2, 8, 6, 1, 0, 5, 8, 1, 4],
+        [0, 6, 7, 2, 6, 9, 1, 0, 2, 3],
+        [1, 3, 7, 6, 1, 0, 1, 3, 5, 7],
+        [7, 5, 1, 2, 6, 8, 0, 0, 7, 9],
+        [3, 4, 0, 3, 7, 3, 5, 8, 6, 0],
+        [1, 4, 5, 8, 0, 7, 9, 3, 0, 8],
+        [4, 9, 0, 3, 1, 0, 4, 5, 7, 9],
+        [7, 9, 7, 6, 2, 1, 6, 0, 8, 7],
+        [1, 0, 2, 9, 2, 7, 6, 5, 1, 3],
+        [8, 4, 6, 2, 1, 6, 7, 9, 5, 4]
+      ];
+  
+      const pathfinder = new PathFinder(mine);
+  
+      let position = pathfinder.getStartPosition();
+      let moves = [position];
+  
+      while (position.x < mine[0].length - 1) {
+        position = pathfinder.moveNextPosition(position);
+        moves.push(position);
+      }
+  
+      assert.deepEqual(moves, [
+        new Position(0, 6),
+        new Position(1, 6),
+        new Position(2, 5),
+        new Position(3, 5),
+        new Position(4, 4),
+        new Position(5, 5),
+        new Position(6, 5),
+        new Position(7, 4),
+        new Position(8, 4),
+        new Position(9, 3)
       ]);
     });
   
