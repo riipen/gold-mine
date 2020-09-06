@@ -30,10 +30,10 @@ const move = (mine, position) => {
 
     // Find all starting positions with the maximum value
     for (let i = 0; i < mine.length; i++) {
-      if (mine[0][i] > maxValue) {
-        maxValue = mine[0][i];
+      if (mine[i][0] > maxValue) {
+        maxValue = mine[i][0];
         maxPositionY = [i];
-      } else if (mine[0][i] === maxValue) {
+      } else if (mine[i][0] === maxValue) {
         maxPositionY.push(i);
       }
     }
@@ -57,10 +57,9 @@ const move = (mine, position) => {
     newX = 0;
     newY = startingPosition;
 
-    console.log('possible starting positions: ', maxPositionY);
-    console.log('starting value: ', maxValue);
-
-    console.log('starting position: ', newY);
+    // console.log('possible starting positions: ', maxPositionY);
+    // console.log('starting position: ', newY);
+    // console.log('starting value: ', maxValue);
   } else { // if position is defined, check to see what the next best move is and move.
     newX = position.x + 1;
 
@@ -69,13 +68,13 @@ const move = (mine, position) => {
 
     // Record values for up, right, and down. If it moves off the grid, ignore that value.
     if (position.y - 1 >= 0) {
-      nextValues.push(mine[newX][position.y - 1]);
+      nextValues.push(mine[position.y - 1][newX]);
       nextDirections.push('up');
     }
-    nextValues.push(mine[newX][position.y]);
+    nextValues.push(mine[position.y][newX]);
     nextDirections.push('right');
     if (position.y + 1 < mine[0].length) {
-      nextValues.push(mine[newX][position.y + 1]);
+      nextValues.push(mine[position.y + 1][newX]);
       nextDirections.push('down');
     }
 
@@ -111,10 +110,10 @@ const move = (mine, position) => {
       movedDown = true;
     }
 
-    console.log(position);
-    console.log('current value: ', mine[newX][newY]);
-    console.log('next values: ', nextValues);
-    console.log('next directions: ', nextDirections, maxDirection);
+    // console.log(position);
+    // console.log('current value: ', mine[newY][newX]);
+    // console.log('next values: ', nextValues);
+    // console.log('next directions: ', nextDirections, '- go', maxDirection);
   }
 
   return new Position(newX, newY);

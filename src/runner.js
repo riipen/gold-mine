@@ -11,7 +11,6 @@ import move from "./move.js";
  *
  * @return {Number} The total gold collected by the miner.
  */
-
 const run = async (mine, logFile, yStart = 0) => {
   if (!mine) throw new Error("a mine is required");
   if (!logFile) throw new Error("a logFile is required");
@@ -28,8 +27,7 @@ const run = async (mine, logFile, yStart = 0) => {
   // log the initial position
   log(logFile, position);
 
-  console.log(position);
-  console.log(position.isValid(mine));
+  // console.log('score', score)
 
   while (position.x < mine[0].length - 1 && position.isValid(mine)) {
     if (position.x !== currentX) {
@@ -46,7 +44,11 @@ const run = async (mine, logFile, yStart = 0) => {
     if (!position.isValid(mine) || mine[position.y][position.x] === 0) break;
 
     score += mine[position.y][position.x];
+
+    // console.log('score', score)
   }
+
+  console.log('final position', position.y, position.x)
 
   return score;
 };
