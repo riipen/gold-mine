@@ -57,9 +57,6 @@ const move = (mine, position) => {
     newX = 0;
     newY = startingPosition;
 
-    // console.log('possible starting positions: ', maxPositionY);
-    // console.log('starting position: ', newY);
-    // console.log('starting value: ', maxValue);
   } else { // if position is defined, check to see what the next best move is and move.
     newX = position.x + 1;
 
@@ -109,11 +106,6 @@ const move = (mine, position) => {
       newY = position.y + 1;
       movedDown = true;
     }
-
-    // console.log(position);
-    // console.log('current value: ', mine[newY][newX]);
-    // console.log('next values: ', nextValues);
-    // console.log('next directions: ', nextDirections, '- go', maxDirection);
   }
 
   return new Position(newX, newY);
