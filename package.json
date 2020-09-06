@@ -30,6 +30,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@std/esm": "^0.26.0",
     "esm": "^3.2.25",
     "require-directory": "^2.1.1"
   }
