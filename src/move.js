@@ -75,13 +75,54 @@ const move = (mine, position) => {
       nextDirections.push('down');
     }
 
+    // Don't repeat the same direction
+    if (movedUp) {
+      nextValues.splice(0, 1);
+      nextDirections.splice(0, 1);
+    } else if (movedRight) {
+      nextValues.splice(1, 1);
+      nextDirections.splice(1, 1);
+    } else if (movedDown) {
+      nextValues.splice(2, 1);
+      nextDirections.splice(2, 1);
+    }
+
     // Find the maximum value and direction
     let maxValue = Math.max(...nextValues);
     let maxIndex = nextValues.indexOf(maxValue);
     let maxDirection = nextDirections[maxIndex];
 
-    // If the maximum value is a repeat of the last direction, remove that option.
-    if ((movedUp && maxDirection === 'up') || (movedRight && maxDirection === 'right') || (movedDown && maxDirection === 'down')) {
+    // Check if you run into any zeros two steps ahead
+    let twoStepsAhead = [];
+    let yAdjustment;
+    if (maxDirection === 'up') {
+      yAdjustment = -1;
+    } else if (maxDirection === 'right') {
+      yAdjustment = 0;
+    } else if (maxDirection === 'down') {
+      yAdjustment = 1;
+    }
+
+    if (position.y - 1 + yAdjustment >= 0) {
+      twoStepsAhead.push(mine[position.y - 1 + yAdjustment][newX + 1]);
+    }
+    twoStepsAhead.push(mine[position.y + yAdjustment][newX + 1]);
+    if (position.y + 1 + yAdjustment < mine[0].length) {
+      twoStepsAhead.push(mine[position.y + 1 + yAdjustment][newX + 1]);
+    }
+
+    // Don't repeat the same direction two steps ahead
+    if (maxDirection === 'up') {
+      twoStepsAhead.splice(0, 1);
+    } else if (maxDirection === 'right') {
+      twoStepsAhead.splice(1, 1);
+    } else if (maxDirection === 'down') {
+      twoStepsAhead.splice(2, 1);
+    }
+
+    // If there are only zeros two steps ahead, change directions
+    // (There are always going to be two options two steps ahead.)
+    if (twoStepsAhead[0] === 0 && twoStepsAhead[1] === 0) {
       nextValues.splice(maxIndex, 1);
       nextDirections.splice(maxIndex, 1);
 
