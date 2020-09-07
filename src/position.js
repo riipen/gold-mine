@@ -28,7 +28,6 @@ class Position {
    */
   isValid(map) {
     if (typeof map[this.y] === 'undefined' || typeof map[this.y][this.x] === 'undefined' || map[this.y][this.x] === 0) {
-
       return false;
     }
 
