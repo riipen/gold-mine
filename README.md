@@ -1,3 +1,9 @@
+Note: To run this program off the shelf without updating node in `package.json` you must manually install version `10.16.3` by running:
+
+`nvm install 10.16.3`
+
+The Riipen repo instructions suggest installing the current LTS which happens to be `12.18.4`. Doing this will cause problems when trying to use `npm start`.
+
 # Daelyn's thoughts
 
 I have a few initial thoughts on this problem. First, there is definitely a greedy recursive solution where you simply pick the best starting position and iterate through picking the highest gold move, taking into account that you don't make the same move twice in a row. This has some clear issues, especially with the "twice in a row" move requirement. First, you will evidently miss out on a higher gold square later in the matrix by only looking at the 3 squares you can move to. Not only do you need to consider future squares, you also need to consider that you won't be able to make the same move twice in a row, when deciding where to go.
