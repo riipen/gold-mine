@@ -29,7 +29,6 @@
   "engines": {
     "node": ">=10.16.3"
   },
-  "type": "module",
   "dependencies": {
     "esm": "^3.2.25",
     "require-directory": "^2.1.1"
