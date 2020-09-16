@@ -1,3 +1,13 @@
+# Daelyn's thoughts
+
+I have a few initial thoughts on this problem. First, there is definitely a greedy recursive solution where you simply pick the best starting position and iterate through picking the highest gold move, taking into account that you don't make the same move twice in a row. This has some clear issues, especially with the "twice in a row" move requirement. First, you will evidently miss out on a higher gold square later in the matrix by only looking at the 3 squares you can move to. Not only do you need to consider future squares, you also need to consider that you won't be able to make the same move twice in a row, when deciding where to go.
+
+With this first idea you could also try all possible combinations of moves. This would be a rather brute force way but you would likely find the best route in the end.
+
+The second idea I have is treating this like a weighted graph problem. Since we have access to the array, you could probably create a weighted graph and use some algorithm like Bellman-Ford to take the most expensive route. I don't feel like this problem warrants something like this though.
+
+My third idea is to use dynamic programming techniques to iterate bottom-up rather than top-down so-to-speak. We would create an empty matrix and iterate through the mine backwards, not yet making any moves. We would assign the highest gold you can achieve to each square. When you finish, you would ideally have the highest gold achievable for each row, which you could then take the maximum of, and finally make all of your moves. I am not entirely sure yet how to achieve this considering the requirement to not make the same move twice in a row.
+
 # gold-mine
 
 Riipen's technical interview "Gold Mine" problem.
