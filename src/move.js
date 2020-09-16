@@ -1,6 +1,7 @@
 import Position from "./position.js";
 
 let movedRight;
+let pathToTake = {};
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -17,25 +18,43 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
+  // if we are entering move for the first time with no position, get the best
+  // path.
+  if (!position) {
+    pathToTake = getBestPath(mine);
 
-  const newX = (position && position.x + 1) || 0;
+    let startPosition = pathToTake[0];
 
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
+    return startPosition;
   }
 
-  return new Position(newX, newY);
+  // // every time we make a move we will return the Position of the best move
+  // // from our pathToTake
+  let nextPosition = pathToTake[position.x + 1];
+  return nextPosition;
 };
+
+function getBestPath(mine) {
+  let mineLength = mine[0].length;
+  let path = {};
+  path[0] = new Position(0, 0);
+
+  for (let i = 0; i < mineLength; i++) {
+    const newX = path[i].x + 1;
+    let newY;
+
+    if (!movedRight) {
+      newY = path[i].y;
+      movedRight = true;
+    } else {
+      newY = path[i].y + 1;
+      movedRight = false;
+    }
+
+    path[i + 1] = new Position(newX, newY);
+  }
+
+  return path;
+}
 
 export default move;
