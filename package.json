@@ -22,7 +22,8 @@
   },
   "scripts": {
     "start": "node -r esm --no-warnings ./index.js",
-    "mine": "node -r esm --no-warnings ./index.js"
+    "mine": "node -r esm --no-warnings ./index.js",
+    "test": "jest"
   },
   "main": "./index.js",
   "engines": {
