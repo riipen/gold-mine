@@ -5,7 +5,7 @@ import path from "path";
 import fs from "fs";
 
 describe("validate", () => {
-  test("it runs the mine and validates that the steps and score are valid", async () => {
+  it("runs the mine and validates that the steps and score are valid", async () => {
     const logFile = path.join(__dirname, "logs", `validator_test.txt`);
 
     const mineScore = await runner.run(mine, logFile);
