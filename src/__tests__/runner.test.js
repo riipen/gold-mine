@@ -8,7 +8,7 @@ describe("run", () => {
     const logFile = path.join(__dirname, "logs", `runner_test.txt`);
     let score = await runner.run(mine, logFile);
 
-    expect(score).toEqual(42);
+    expect(score).toEqual(168);
 
     fs.writeFileSync(logFile, "");
   });

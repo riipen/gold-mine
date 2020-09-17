@@ -3,6 +3,12 @@ import Position from "./position.js";
 let movedRight;
 let pathToTake = {};
 
+const MOVES = {
+  UP: "up",
+  RIGHT: "right",
+  DOWN: "down",
+};
+
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
@@ -36,19 +42,66 @@ const move = (mine, position) => {
 
 function getBestPath(mine) {
   let mineLength = mine[0].length;
+  let mineHeight = mine.length;
   let path = {};
+  let lastMove = MOVES.UP;
+
   path[0] = new Position(0, 0);
 
   for (let i = 0; i < mineLength; i++) {
     const newX = path[i].x + 1;
     let newY;
+    // mine[row][col]
 
-    if (!movedRight) {
-      newY = path[i].y;
-      movedRight = true;
-    } else {
-      newY = path[i].y + 1;
-      movedRight = false;
+    let up;
+    let right;
+    let down;
+
+    if (path[i].y - 1 > 0) {
+      up = mine[path[i].y - 1][newX];
+    }
+
+    if (newX < mineLength) {
+      right = mine[path[i].y][newX];
+    }
+
+    if (path[i].y + 1 < mineHeight) {
+      down = mine[path[i].y + 1][newX];
+    }
+
+    if (lastMove === MOVES.UP) {
+      // go right or down
+      if (right > down) {
+        // go right
+        newY = path[i].y;
+        lastMove = MOVES.RIGHT;
+      } else {
+        // go down
+        newY = path[i].y + 1;
+        lastMove = MOVES.DOWN;
+      }
+    } else if (lastMove === MOVES.RIGHT) {
+      // go up or down
+      if (up > down) {
+        // go up
+        newY = path[i].y - 1;
+        lastMove = MOVES.UP;
+      } else {
+        // go down
+        newY = path[i].y + 1;
+        lastMove = MOVES.DOWN;
+      }
+    } else if (lastMove === MOVES.DOWN) {
+      // go up or right
+      if (up > right) {
+        // go up
+        newY = path[i].y - 1;
+        lastMove = MOVES.UP;
+      } else {
+        // go right
+        newY = path[i].y;
+        lastMove = MOVES.RIGHT;
+      }
     }
 
     path[i + 1] = new Position(newX, newY);
