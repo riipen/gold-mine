@@ -1,7 +1,7 @@
 import Position from "./position.js";
-import buildPath from "./build_path.js";
+import buildPath from "./buildPath.js";
 
-let pathToTake = {};
+let pathToTake = [];
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -24,13 +24,13 @@ const move = (mine, position) => {
     pathToTake = buildPath(mine);
 
     let startPosition = pathToTake[0];
-
     return startPosition;
   }
 
   // every time we make a move we will return the Position of the best move
   // from our pathToTake
   let nextPosition = pathToTake[position.x + 1];
+
   return nextPosition;
 };
 
