@@ -13,18 +13,18 @@ describe("buildPath", () => {
     let path = buildPath(mine);
 
     expect(path[0].x).toEqual(0);
-    expect(path[0].y).toEqual(0);
+    expect(path[0].y).toEqual(1);
 
     expect(path[1].x).toEqual(1);
     expect(path[1].y).toEqual(1);
 
     expect(path[2].x).toEqual(2);
-    expect(path[2].y).toEqual(1);
+    expect(path[2].y).toEqual(0);
   });
 });
 
 describe("getGold", () => {
-  test("it returns the gold for the next 3 move options", () => {
+  test("it returns the gold for the next 3 move options at (0,0)", () => {
     let curPosition = new Position(0, 0);
 
     let gold = getGold(curPosition, mine, 1);
@@ -32,6 +32,26 @@ describe("getGold", () => {
     expect(gold.up).toBeFalsy();
     expect(gold.right).toEqual(3);
     expect(gold.down).toEqual(5);
+  });
+
+  test("it returns the gold for the next 3 move options at (0,1)", () => {
+    let curPosition = new Position(0, 1);
+
+    let gold = getGold(curPosition, mine, 1);
+
+    expect(gold.up).toEqual(3);
+    expect(gold.right).toEqual(5);
+    expect(gold.down).toEqual(2);
+  });
+
+  test("it returns the gold for the next 3 move options at (0,2)", () => {
+    let curPosition = new Position(0, 2);
+
+    let gold = getGold(curPosition, mine, 1);
+
+    expect(gold.up).toEqual(5);
+    expect(gold.right).toEqual(2);
+    expect(gold.down).toBeFalsy();
   });
 
   test("it returns falsy if you are at the end of the mine", () => {

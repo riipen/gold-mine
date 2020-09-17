@@ -11,7 +11,7 @@ function buildPath(mine) {
   let path = {};
   let lastMove = MOVES.UP;
 
-  path[0] = new Position(0, 0);
+  path[0] = new Position(0, Math.floor(mine.length / 2));
 
   for (let i = 0; i < mineLength; i++) {
     const newX = path[i].x + 1;
@@ -64,7 +64,7 @@ function buildPath(mine) {
 function getGold(curPosition, mine, newX) {
   let gold = {};
 
-  if (curPosition.y - 1 > 0) {
+  if (curPosition.y - 1 >= 0) {
     gold.up = mine[curPosition.y - 1][newX];
   }
 
