@@ -78,6 +78,11 @@ $ npm run mine -- jupiter
 This will run the miner through the "jupiter" mine. (All mines can be found
 in the `mines/` directory.)
 
+To run test case
+```bash
+$ npm run test
+```
+
 # Architecture
 
 The current naive approach to mining can be found in `src/move.js`.
