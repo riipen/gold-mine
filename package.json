@@ -22,7 +22,8 @@
   },
   "scripts": {
     "start": "node -r esm --no-warnings ./index.js",
-    "mine": "node -r esm --no-warnings ./index.js"
+    "mine": "node -r esm --no-warnings ./index.js",
+    "test": "jest"
   },
   "main": "./index.js",
   "engines": {
@@ -32,5 +33,24 @@
   "dependencies": {
     "esm": "^3.2.25",
     "require-directory": "^2.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-jest": "^26.3.0",
+    "jest": "^26.4.2"
+  },
+  "jest": {
+    "verbose": true,
+    "globals": {
+      "__DEV__": true
+    },
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
   }
 }
