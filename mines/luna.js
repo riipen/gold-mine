@@ -12,3 +12,9 @@ const mine = [
 ];
 
 export default mine;
+
+
+/*
+  If mine[position.y][position.x + 1] == mine[position.y + 1][position.x + 1]
+  look ahead 1 column and find the greater value
+*/
