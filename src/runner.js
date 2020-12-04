@@ -106,7 +106,7 @@ const run = async (mine, logFile, yStart = 0) => {
   }
   for (let i = trace.length - 1; i >= 0; --i)
       log(logFile, trace[i]);
-  console.log(ans.val);
+  return ans.val;
 }
 
 /**
