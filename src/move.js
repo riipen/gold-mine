@@ -27,15 +27,14 @@ const move = (mine, position) => {
   }
   if (!position) {
     //Starting position
-    console.log("Starting position");
     let newY;
     let maxScore = -1;
     for (let y = 0; y < mine.length; y++) {
-      bestTotalScore(new Position(0, y), mine);
+      bestTotalScore(new Position(0, y), mine, null);
     }
     Object.keys(helperObject).map((y) => {
-      if (helperObject[y][0] > maxScore) {
-        maxScore = helperObject[y][0];
+      if (helperObject[y][0] && helperObject[y][0]["final"] > maxScore) {
+        maxScore = helperObject[y][0].final;
         newY = y;
       }
     });
@@ -46,21 +45,27 @@ const move = (mine, position) => {
     const rightUpBestScore =
       lastMove === RIGHT_UP
         ? -1
-        : helperObject[currentY - 1] && helperObject[currentY - 1][newX]
-        ? helperObject[currentY - 1][newX]
-        : bestTotalScore(new Position(newX, currentY - 1), mine);
+        : helperObject[currentY - 1] &&
+          helperObject[currentY - 1][newX] &&
+          helperObject[currentY - 1][newX][RIGHT_UP]
+        ? helperObject[currentY - 1][newX][RIGHT_UP]
+        : bestTotalScore(new Position(newX, currentY - 1), mine, RIGHT_UP);
     const rightBestScore =
       lastMove === RIGHT
         ? -1
-        : helperObject[currentY] && helperObject[currentY][newX]
-        ? helperObject[currentY][newX]
-        : bestTotalScore(new Position(newX, currentY), mine);
+        : helperObject[currentY] &&
+          helperObject[currentY][newX] &&
+          helperObject[currentY][newX][RIGHT]
+        ? helperObject[currentY][newX][RIGHT]
+        : bestTotalScore(new Position(newX, currentY), mine, RIGHT);
     const rightDownBestScore =
       lastMove === RIGHT_DOWN
         ? -1
-        : helperObject[currentY + 1] && helperObject[currentY + 1][newX]
-        ? helperObject[currentY + 1][newX]
-        : bestTotalScore(new Position(newX, currentY + 1), mine);
+        : helperObject[currentY + 1] &&
+          helperObject[currentY + 1][newX] &&
+          helperObject[currentY + 1][newX][RIGHT_DOWN]
+        ? helperObject[currentY + 1][newX][RIGHT_DOWN]
+        : bestTotalScore(new Position(newX, currentY + 1), mine, RIGHT_DOWN);
 
     const maxNextStepScore = Math.max(
       rightUpBestScore,
@@ -79,38 +84,66 @@ const move = (mine, position) => {
       lastMove = RIGHT_DOWN;
       newY = (position && currentY + 1) || 0;
     }
-
     return new Position(newX, newY);
   }
 };
 
-const bestTotalScore = (position, mine) => {
-  // console.log("checking position", position);
+const bestTotalScore = (position, mine, lastDirection) => {
   if (position.y >= 0 && position.isValid(mine)) {
     if (
+      lastDirection &&
       helperObject[position.y] &&
-      helperObject[position.y][position.x] !== undefined
+      helperObject[position.y][position.x] &&
+      helperObject[position.y][position.x][lastDirection]
     ) {
-      return helperObject[position.y][position.x];
+      return helperObject[position.y][position.x][lastDirection];
     }
     const currentScore = getPositionScore(position, mine);
     const nextStepBestScore = Math.max(
-      bestTotalScore(new Position(position.x + 1, position.y - 1), mine),
-      bestTotalScore(new Position(position.x + 1, position.y), mine),
-      bestTotalScore(new Position(position.x + 1, position.y + 1), mine)
+      lastDirection == RIGHT_UP
+        ? -1
+        : bestTotalScore(
+            new Position(position.x + 1, position.y - 1),
+            mine,
+            RIGHT_UP
+          ),
+      lastDirection == RIGHT
+        ? -1
+        : bestTotalScore(new Position(position.x + 1, position.y), mine, RIGHT),
+      lastDirection == RIGHT_DOWN
+        ? -1
+        : bestTotalScore(
+            new Position(position.x + 1, position.y + 1),
+            mine,
+            RIGHT_DOWN
+          )
     );
-
+    const positionBestScore = currentScore + nextStepBestScore;
     if (!helperObject[position.y]) {
       helperObject[position.y] = {};
     }
-    helperObject[position.y][position.x] = currentScore + nextStepBestScore;
-
-    return currentScore + nextStepBestScore;
+    if (!helperObject[position.y][position.x]) {
+      helperObject[position.y][position.x] = {};
+    }
+    if (lastDirection) {
+      helperObject[position.y][position.x][lastDirection] = positionBestScore;
+    } else {
+      helperObject[position.y][position.x]["final"] = positionBestScore;
+    }
+    // console.log("helperObject[position.y]", helperObject[position.y]);
+    return positionBestScore;
   } else {
     if (!helperObject[position.y]) {
       helperObject[position.y] = {};
     }
-    helperObject[position.y][position.x] = 0;
+    if (!helperObject[position.y][position.x]) {
+      helperObject[position.y][position.x] = {};
+    }
+    if (lastDirection) {
+      helperObject[position.y][position.x][lastDirection] = 0;
+    } else {
+      helperObject[position.y][position.x]["final"] = 0;
+    }
     return 0;
   }
 };
