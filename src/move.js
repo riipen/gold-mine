@@ -4,6 +4,7 @@ const RIGHT = "Right";
 const RIGHT_DOWN = "RightDown";
 let lastMove;
 let helperObject = {};
+let mineSize = 0;
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
@@ -19,19 +20,26 @@ let helperObject = {};
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
+  if (mineSize != mine.length) {
+    //clean cache if working on a different mine
+    helperObject = {};
+    mineSize = mine.length;
+  }
   if (!position) {
     //Starting position
+    console.log("Starting position");
     let newY;
     let maxScore = -1;
     for (let y = 0; y < mine.length; y++) {
-      const score = bestTotalScore(new Position(0, y), mine);
-      if (score > maxScore) {
-        maxScore = score;
+      bestTotalScore(new Position(0, y), mine);
+    }
+    Object.keys(helperObject).map((y) => {
+      if (helperObject[y][0] > maxScore) {
+        maxScore = helperObject[y][0];
         newY = y;
       }
-    }
+    });
     return new Position(0, newY);
-    // return new Position(0, 0);
   } else {
     const newX = (position && position.x + 1) || 0;
     const currentY = (position && position.y) || 0;
@@ -86,9 +94,6 @@ const bestTotalScore = (position, mine) => {
       return helperObject[position.y][position.x];
     }
     const currentScore = getPositionScore(position, mine);
-    if (currentScore === null) {
-      return -1;
-    }
     const nextStepBestScore = Math.max(
       bestTotalScore(new Position(position.x + 1, position.y - 1), mine),
       bestTotalScore(new Position(position.x + 1, position.y), mine),
@@ -102,15 +107,17 @@ const bestTotalScore = (position, mine) => {
 
     return currentScore + nextStepBestScore;
   } else {
+    if (!helperObject[position.y]) {
+      helperObject[position.y] = {};
+    }
+    helperObject[position.y][position.x] = 0;
     return 0;
   }
 };
 
 const getPositionScore = (position, mine) => {
   if (position.isValid(mine)) {
-    return mine[position.y][position.x] == 0
-      ? null
-      : mine[position.y][position.x];
+    return mine[position.y][position.x];
   } else {
     return 0;
   }
