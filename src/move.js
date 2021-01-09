@@ -19,11 +19,19 @@ let helperObject = {};
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
   if (!position) {
-    return new Position(0, 0);
+    //Starting position
+    let newY;
+    let maxScore = -1;
+    for (let y = 0; y < mine.length; y++) {
+      const score = bestTotalScore(new Position(0, y), mine);
+      if (score > maxScore) {
+        maxScore = score;
+        newY = y;
+      }
+    }
+    return new Position(0, newY);
+    // return new Position(0, 0);
   } else {
     const newX = (position && position.x + 1) || 0;
     const currentY = (position && position.y) || 0;
@@ -78,6 +86,9 @@ const bestTotalScore = (position, mine) => {
       return helperObject[position.y][position.x];
     }
     const currentScore = getPositionScore(position, mine);
+    if (currentScore === null) {
+      return -1;
+    }
     const nextStepBestScore = Math.max(
       bestTotalScore(new Position(position.x + 1, position.y - 1), mine),
       bestTotalScore(new Position(position.x + 1, position.y), mine),
@@ -97,7 +108,9 @@ const bestTotalScore = (position, mine) => {
 
 const getPositionScore = (position, mine) => {
   if (position.isValid(mine)) {
-    return mine[position.y][position.x];
+    return mine[position.y][position.x] == 0
+      ? null
+      : mine[position.y][position.x];
   } else {
     return 0;
   }
