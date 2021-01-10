@@ -2,11 +2,10 @@ import Position from "./position.js";
 const RIGHT_UP = "RightUp";
 const RIGHT = "Right";
 const RIGHT_DOWN = "RightDown";
-let lastMove;
-let helperObject = {};
-let mineSize = 0;
+let lastMove; // directions in last time moving
+let helperObject = {}; //This object is used as cache to save the results on each node
+let mineSize = 0; //mine size, to identify different mine
 /**
- * Replace the logic in this function with your own custom movement algorithm.
  *
  * This function should run in a reasonable amount of time and should attempt
  * to collect as much gold as possible.
@@ -42,6 +41,7 @@ const move = (mine, position) => {
   } else {
     const newX = (position && position.x + 1) || 0;
     const currentY = (position && position.y) || 0;
+    //Calculate best scores will get for different directions
     const rightUpBestScore =
       lastMove === RIGHT_UP
         ? -1
@@ -67,6 +67,7 @@ const move = (mine, position) => {
         ? helperObject[currentY + 1][newX][RIGHT_DOWN]
         : bestTotalScore(new Position(newX, currentY + 1), mine, RIGHT_DOWN);
 
+    //Chose the max total-score position to move
     const maxNextStepScore = Math.max(
       rightUpBestScore,
       rightBestScore,
@@ -88,6 +89,7 @@ const move = (mine, position) => {
   }
 };
 
+//find the best total score if entry is "position"
 const bestTotalScore = (position, mine, lastDirection) => {
   if (position.y >= 0 && position.isValid(mine)) {
     if (
@@ -96,9 +98,10 @@ const bestTotalScore = (position, mine, lastDirection) => {
       helperObject[position.y][position.x] &&
       helperObject[position.y][position.x][lastDirection]
     ) {
+      //if already calculated before, just read from helperObject
       return helperObject[position.y][position.x][lastDirection];
     }
-    const currentScore = getPositionScore(position, mine);
+    const currentScore = getCurrentScore(position, mine);
     const nextStepBestScore = Math.max(
       lastDirection == RIGHT_UP
         ? -1
@@ -119,6 +122,8 @@ const bestTotalScore = (position, mine, lastDirection) => {
           )
     );
     const positionBestScore = currentScore + nextStepBestScore;
+
+    // cache the current round result before return
     if (!helperObject[position.y]) {
       helperObject[position.y] = {};
     }
@@ -126,13 +131,17 @@ const bestTotalScore = (position, mine, lastDirection) => {
       helperObject[position.y][position.x] = {};
     }
     if (lastDirection) {
+      //if it's not the entry position
       helperObject[position.y][position.x][lastDirection] = positionBestScore;
     } else {
+      //entry position
       helperObject[position.y][position.x]["final"] = positionBestScore;
     }
-    // console.log("helperObject[position.y]", helperObject[position.y]);
     return positionBestScore;
   } else {
+    // boundry condition
+
+    // cache the current round result before return
     if (!helperObject[position.y]) {
       helperObject[position.y] = {};
     }
@@ -140,15 +149,18 @@ const bestTotalScore = (position, mine, lastDirection) => {
       helperObject[position.y][position.x] = {};
     }
     if (lastDirection) {
+      //if it's not the entry position
       helperObject[position.y][position.x][lastDirection] = 0;
     } else {
+      //entry position
       helperObject[position.y][position.x]["final"] = 0;
     }
     return 0;
   }
 };
 
-const getPositionScore = (position, mine) => {
+const getCurrentScore = (position, mine) => {
+  //get the current score on the specific position of mine.
   if (position.isValid(mine)) {
     return mine[position.y][position.x];
   } else {
