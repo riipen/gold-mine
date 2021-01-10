@@ -2,90 +2,42 @@
 
 Riipen's technical interview "Gold Mine" problem.
 
-# Exercise
+# Solving processes
 
-Given a gold mine of n \* m dimensions, design an algorithm for a gold miner to collect
-as much gold as possible. Each field in this mine contains a positive integer
-which is the amount of gold in that space. The miner starts at the first column but can be at any row.
-The miner can only move right, diagonally right and up, or diagonally right and down. The miner
-cannot repeat it's previous move (ie. if it's previous move was diagonally right and up, it can
-only move right or diagonally right and down on its current move).
+This problem looks like a "Greedy" or "Dynamic Programming" problem. Because the "Greedy" algorithm usually cannot get the best solution,
 
-![Gold mine diagram](https://i.imgur.com/pmb9XCA.png "Gold Mine Diagram")
+I think DP(Dynamic Programming) can be a better choice here. The current position decision always relies on the best score of the right three positions.
 
-If the miner leaves the mine for any reason (goes outside the dimensions of the mine), gold collection
-will cease and the final score will be the current score.
+## 1. Simplify the Problem
 
-If the miner lands on a section of the mine that has zero gold (an integer value of 0), gold
-collection will cease and the final score will be the current score.
+Firstly, simplify the problem, focus on the main issue first. And try to implement the simplified algorithm base on "luna" data.
 
-# Rules
+I assume the miner always starts moving from (0,0) and can repeat the last move direction. They should be easier to implement later by adding some "if conditions."
+Break the problem into sub-problems. Every movement has almost similar processes, which is just checking the right three entries. The given method "Position.isValid" can be used as the boundary condition.
 
-- There is no time limit
-- Use your best discretion with the design of your solution
-- You can ask questions
-- You are free to add packages, tools, or improvements as you see fit
-- We expect you write the kind of feature you would put into production, including tests and documentation as you see fit
+The recursive function logic looks like this:
 
-# Submission
+F(x,y)= currentScore + max(F(x+1,y-1),F(x+1,y), F(x+1,y+1))
 
-Fork this repository to your Github account. Make any of the changes you wish to make,
-then submit a pull request back up stream to this repository.
+Then implement the algorithm. I notice some duplicate processes in the recursive function; the "child trees" can be calculated repeatedly. So I added a global variable to save the result of each round and improve the performance. The global variable kept every position's info, including the best total score and last moving direction.
 
-If you can score in the top 10 of all time submissions, your name will be added to our
-[leader board](https://github.com/riipen/gold-mine/wiki/Leader-Board).
+## 2. Add More Features
 
-# Setup
+Secondly, add more features in the first version algorithm. Think about the condition when the miner cannot repeat the not just moving from (0,0).
 
-## Node
+For the best entry position problem, my solution is checking all entries. And return the entry that has maximum scores in the helper variable, which contains all processing records. Because I have cached all processing results, there is no additional time-consuming in this process.
 
-1. Install `nvm` via the instructions [here](https://github.com/nvm-sh/nvm#installation-and-update), something like:
+For the other requirement(no-repeat moving directions), I added some "if conditions" in the recursive function before comparing the best score of the right three positions.
 
-```bash
-$ curl -o- https://raw.githubusercontent.com/creationix/nvm/${VERSION}/install.sh | bash
-```
+## 3. Polish
 
-2. Install `node 10.16.3` (currently latest LTS):
+Thirdly, Check some special cases ( like score-0 positions, boundaries ) and test the algorithm with larger-size testing data ("Jupiter" and "Mars").
 
-```bash
-nvm install --lts
-nvm use --lts
-```
+# Result
 
-4. Upgrade npm and install local dependencies:
+Riipen Gold Miner
 
-```bash
-npm install npm@latest -g
-npm install
-```
-
-## Run
-
-To run the miner through all mines:
-
-```bash
-$ npm start
-```
-
-This will give you your score per mine, as well as your final score.
-
-To run the miner through a specific mine:
-
-```bash
-$ npm run mine -- jupiter
-```
-
-This will run the miner through the "jupiter" mine. (All mines can be found
-in the `mines/` directory.)
-
-# Architecture
-
-The current naive approach to mining can be found in `src/move.js`.
-Your job will be to improve upon the existing implementation in order
-to collect as much gold as possible.
-
-You should not need to touch any of the other existing files.
-
-# Contact
-
-We encourage you to use your best discretion, but also to ask questions and communicate if you need it.
+- Mine 'jupiter' score: 7072
+- Mine 'luna' score: 67
+- Mine 'mars' score: 721
+- Final score: 7860
