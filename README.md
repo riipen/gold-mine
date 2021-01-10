@@ -4,9 +4,7 @@ Riipen's technical interview "Gold Mine" problem.
 
 # Solving processes
 
-This problem looks like a "Greedy" or "Dynamic Programming" problem. Because the "Greedy" algorithm usually cannot get the best solution,
-
-I think DP(Dynamic Programming) can be a better choice here. The current position decision always relies on the best score of the right three positions.
+This problem looks like a "Greedy" or "Dynamic Programming" problem. The "Greedy" algorithm usually cannot get the best solution, so I think DP(Dynamic Programming) can be a better choice here. The result of the current position always depends on the result starting from the three positions to the right.
 
 ## 1. Simplify the Problem
 
