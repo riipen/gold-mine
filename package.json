@@ -25,6 +25,11 @@
     "mine": "node -r esm --no-warnings ./index.js",
     "test": "jest"
   },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
   "main": "./index.js",
   "engines": {
     "node": ">=10.16.3"
@@ -35,6 +40,8 @@
     "require-directory": "^2.1.1"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.12.11",
+    "babel-jest": "^26.6.3",
     "jest": "^26.6.3"
   }
 }
