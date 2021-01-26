@@ -1,5 +1,5 @@
 import fs from "fs";
-import { calculateGoldTally } from "./dp.js";
+import { calculateGoldTally } from "./goldCollection.js";
 import { highestStartPoint } from "./generation.js";
 // import { fullPath } from "./goldCollection.js";
 

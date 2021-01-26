@@ -1,4 +1,4 @@
-import { calculateGoldTally, calculateLocalMaxValidMove } from "../dp";
+import { calculateGoldTally, calculateLocalMaxValidMove } from "../goldCollection";
 import { generateTrackingPositionArray } from "../generation";
 import Position from "../position";
 
@@ -14,7 +14,7 @@ const zeroMine = [
   [1, 1, 3, 4],
 ];
 
-describe("dp algorithm calculation functions", () => {
+describe("goldCollection (dynamic) algorithm calculation functions", () => {
   it("creates an array with the gold collected", () => {
     const directionMine = generateTrackingPositionArray(smallTestMine);
     const trackingPostionMine = generateTrackingPositionArray(smallTestMine);

@@ -2,7 +2,7 @@
 
 ***See Below inital thoughts for implementation***
 
-After reading the problem my first thought is that this should be solved recursively or with DP. A simple brute force approach would be to always take the local maximum and backtrack on zeros, but the problem with this is that while the next number route may be the highest it could miss a even higher value resulting in a larger end value.
+After reading the problem my first thought is that this should be solved recursively or with dynamic programming. A simple brute force approach would be to always take the local maximum and backtrack on zeros, but the problem with this is that while the next number route may be the highest it could miss a even higher value resulting in a larger end value.
 
 My next though is to just run through the whole graph using a modified DFS algorithm the problem with this is that you technical have 'm' graphs of 'n' length running through all of them is exponential time and is not ideal.
 
