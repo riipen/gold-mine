@@ -1,9 +1,15 @@
 import fs from "fs";
+import { calculateGoldTally } from "./dp.js";
+import { highestStartPoint } from "./generation.js";
+// import { fullPath } from "./goldCollection.js";
 
 import move from "./move.js";
+import Position from "./position.js";
+import { generateTrackingPositionArray } from "./generation.js";
 
 /**
  * Given a mine, runs the miner through the mine collecting gold along the way.
+ * The optimal path is calculated first and then the miner runs along it.
  *
  * @param  {array} mine - A n x m multidimensional array respresenting the mine.
  * @param  {string} logFile - A file location where moves of the miner should be logged to.
@@ -15,9 +21,19 @@ const run = async (mine, logFile, yStart = 0) => {
   if (!mine) throw new Error("a mine is required");
   if (!logFile) throw new Error("a logFile is required");
 
-  // Initial position
-  let position = await move(mine);
+  // tracking holds position values and direction general next direction
+  const trackingMine = generateTrackingPositionArray(mine)
+  const directionMine = generateTrackingPositionArray(mine)
+  const goldMine = mine.map(function (arr) {
+    return arr.slice();
+  });
 
+  calculateGoldTally(goldMine, trackingMine, directionMine);
+  
+  // Initial position
+  let start = highestStartPoint(goldMine)
+  let position = await move(start);
+ 
   // Track where the current X value should be
   let currentX = 0;
 
@@ -34,7 +50,12 @@ const run = async (mine, logFile, yStart = 0) => {
       );
     }
 
-    position = await move(mine, position);
+    position = await move(
+      start,
+      position,
+      trackingMine
+    );
+
     currentX++;
 
     log(logFile, position);

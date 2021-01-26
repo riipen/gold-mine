@@ -1,4 +1,5 @@
 import move from "../move";
+import Position from "../position";
 
 const smallTestMine = [
   [1, 7, 5],
@@ -6,16 +7,32 @@ const smallTestMine = [
   [1, 4, 1],
 ];
 
-describe("move function mine tests", () => {
-  it("returns (0,0) if no starting point is given", () => {
-    const currentPosition = move(smallTestMine);
+const smallTestTrackingMine = [
+  [new Position(1,0), new Position(2,1), null],
+  [new Position(1,0), new Position(2,1), null],
+  [new Position(1,2), new Position(2,1), null],
+]
 
-    expect(currentPosition.x).toEqual(0);
-    expect(currentPosition.y).toEqual(0);
+describe("move function mine tests", () => {
+  it("returns undefined if no starting point is given", () => {
+    const currentPosition = move();
+
+    expect(currentPosition.y).toEqual(undefined);
   });
 
-  it("returns the next best position", () => {
-    const currentPosition = move(smallTestMine, move(smallTestMine));
+  it("returns the proper start position given the right starting column and no position", () => {
+    const startColumn = 1;
+    const currentPosition = move(startColumn);
+
+    expect(currentPosition.x).toEqual(0);
+    expect(currentPosition.y).toEqual(1);
+  });
+
+  it("returns the proper position if given one and ignores the start value", () => {
+    const startColumn = 1;
+    const position = new Position(0,1)
+    const currentPosition = move(startColumn, position, smallTestTrackingMine);
+
     expect(currentPosition.x).toEqual(1);
     expect(currentPosition.y).toEqual(0);
   });

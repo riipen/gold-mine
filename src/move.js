@@ -1,41 +1,26 @@
 import Position from "./position.js";
 
-let movedRight;
-
 /**
- * Replace the logic in this function with your own custom movement algorithm.
+ * Moves the 'miner' along the array for scoring. It follows the path of the passed
+ * in trackingMine which contains the next position in the current cell.
  *
- * This function should run in a reasonable amount of time and should attempt
- * to collect as much gold as possible.
- *
- * Remember, landing outside the mine's boundary or on a "0" on the mine will
- * result in the run completing.
- *
- * @param  {array} mine - A n x m multidimensional array respresenting the mine.
+ * @param  {int} startingColumn - The spot to start on the "best score" path
  * @param  {object} position - The current position of the miner, will be undefined on the first move
+ * @param  {array} trackingMine - A copy n x m of the gold array to track next position
  *
  * @return {Position} The new position of the miner.
  */
-const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
+const move = (startingColumn, position, trackingMine) => {
+  // Case for starting position else, move happens normally otherwise
+  if (!position) {
+    position = new Position(0, startingColumn);
 
-  const newX = (position && position.x + 1) || 0;
-
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
+    return new Position(position.x, position.y);
   } else {
-    newY = (position && position.y + 1) || 0;
+    const nextPosition = trackingMine[position.y][position.x];
 
-    movedRight = false;
+    return nextPosition;
   }
-
-  return new Position(newX, newY);
 };
 
 export default move;
