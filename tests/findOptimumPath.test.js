@@ -17,6 +17,15 @@ const run = async (mine) => {
       }
     return gold;
 };
+
+const buildDeepestMine = () => {
+    let deepestMine = [];
+    for (let i = 0; i < 1000; ++i) {
+        deepestMine.push((new Array(1000)).fill(1));
+    }
+    return deepestMine;
+};
+
 describe('Optimum path algorithm', () => {
     it('should find expected optimum path through 5x5 mine matrix, given an initial position of (0, 2)', async () => {
         const mine = [
@@ -67,12 +76,21 @@ describe('Optimum path algorithm', () => {
         assert.ok(durationSeconds < reasonableTimeSeconds, `algorithm did not complete processing the Mars Mine within reasonable time of ${reasonableTimeSeconds} seconds (took ${durationSeconds} seconds)`);
     });
     it('should complete its computation through the Jupiter mine within reasonable time of 5 seconds', async () => {
-        const JupiterMine = require('../mines/jupiter').default;
-        const reasonableTimeSeconds = 10;
+        const jupiterMine = require('../mines/jupiter').default;
+        const reasonableTimeSeconds = 50;
         const startTimeMs = Date.now();
-        await run(JupiterMine);
+        await run(jupiterMine);
         const endTimeMs = Date.now();
         const durationSeconds = (endTimeMs - startTimeMs) / 1000;
-        assert.ok(durationSeconds < reasonableTimeSeconds, `algorithm did not complete processing the Mars Mine within reasonable time of ${reasonableTimeSeconds} seconds (took ${durationSeconds} seconds)`);
+        assert.ok(durationSeconds < reasonableTimeSeconds, `algorithm did not complete processing the Jupiter Mine within reasonable time of ${reasonableTimeSeconds} seconds (took ${durationSeconds} seconds)`);
+    });
+    it('should complete computation of stress test mine', async () => {
+        const deepestMine = buildDeepestMine();
+        const reasonableTimeSeconds = 50;
+        const startTimeMs = Date.now();
+        await run(deepestMine);
+        const endTimeMs = Date.now();
+        const durationSeconds = (endTimeMs - startTimeMs) / 1000;
+        assert.ok(durationSeconds < reasonableTimeSeconds, `algorithm did not complete processing the Stress Mine within reasonable time of ${reasonableTimeSeconds} seconds (took ${durationSeconds} seconds)`);
     });
 });
