@@ -11,6 +11,13 @@ export let exploredMineSegments = 1;
 // list to contain the positions of the miner along the optimum path (global for all calls to move())
 let optimumPathPositionsStack = [];
 
+// describe move types as position deltas relative to the current position of the miner
+export const Moves = Object.freeze({
+  RIGHT_DIAGONAL_UP: new Position(1, 1),
+  RIGHT: new Position(1, 0),
+  RIGHT_DIAGONAL_DOWN: new Position(1, -1)
+});
+
 /**
  * This function should run in a reasonable amount of time and should attempt
  * to collect as much gold as possible.

@@ -1,13 +1,39 @@
 import MinerPath from "./MinerPath";
 import Position from "./position";
-import {exploredMineSegments, mineSegmentDepthX} from './move';
+import {Moves, exploredMineSegments, mineSegmentDepthX} from './move';
 
-// describe move types as position deltas relative to the current position of the miner
-export const Moves = Object.freeze({
-    RIGHT_DIAGONAL_UP: new Position(1, 1),
-    RIGHT: new Position(1, 0),
-    RIGHT_DIAGONAL_DOWN: new Position(1, -1)
-});
+/**
+ * 
+ * @param {object} aMove - A move to explore branching of subsequent paths or to terminate the current path
+ * @param {array} mine  - A n x m multidimensional array respresenting the mine.
+ * @param {Position} position - current position of the miner
+ */
+const explorePathsFromMove = (aMove, mine, position) => {
+    // use the move object as a position delta to calculate the next position
+    const nextPosition = new Position(position.x + aMove.x, position.y + aMove.y);
+    // count the gold at the next position if the position is valid
+    const foundGold = (nextPosition.isValid(mine) && mine[nextPosition.y][nextPosition.x]) || 0;
+    // determine if the current path has reached the end of the mine segment being currently explored
+    const isAtLimitsOfMineSegment = (position.x % (exploredMineSegments * mineSegmentDepthX)) === 0;
+    // determine if the current position is in the first column of the entire mine
+    const isNotFirstPositionInMine = position.x !== 0;
+    // determine if the next position being considered is beyond the bounds of the mine
+    const nextPositionIsBeyondMineBounds = (nextPosition.x >= mine[0].length) || (nextPosition.y >= mine.length);
+    if ((isAtLimitsOfMineSegment && isNotFirstPositionInMine) || nextPositionIsBeyondMineBounds) {
+      return new MinerPath([], foundGold);
+    }
+    // base case: 0 gold for an invalid/end position, therefore consider it the end of the prospective path
+    if (foundGold === 0) {
+      return new MinerPath(
+        [nextPosition],
+        foundGold
+      );
+    } else {
+      // recursive case: explore branching of new moves at the new position following the current move
+      // (passing the current move as the previous move for the next search tree)
+      return findOptimumPath(mine, nextPosition, aMove);
+    }
+  }
 
 /**
  * This function uses a recursive backtracking algorithm to determine the optimal
@@ -25,32 +51,7 @@ const findOptimumPath = (mine, position, previousMove = null) => {
     const availableMoves = Object.values(Moves).filter(aMove => previousMove === null || aMove.y !== previousMove.y);
     // explore path options available to the given position based on available moves.
     const possibleMinerPaths = availableMoves.map(
-       (aMove) => {
-        // use the move object as a position delta to calculate the next position
-        const nextPosition = new Position(position.x + aMove.x, position.y + aMove.y);
-        // count the gold at the next position if the position is valid
-        const foundGold = (nextPosition.isValid(mine) && mine[nextPosition.y][nextPosition.x]) || 0;
-        // determine if the current path has reached the end of the mine segment being currently explored
-        const isAtLimitsOfMineSegment = (position.x % (exploredMineSegments * mineSegmentDepthX)) === 0;
-        // determine if the current position is in the first column of the entire mine
-        const isNotFirstPositionInMine = position.x !== 0;
-        // determine if the next position being considered is beyond the bounds of the mine
-        const nextPositionIsBeyondMineBounds = (nextPosition.x >= mine[0].length) || (nextPosition.y >= mine.length);
-        if ((isAtLimitsOfMineSegment && isNotFirstPositionInMine) || nextPositionIsBeyondMineBounds) {
-          return new MinerPath([], foundGold);
-        }
-        // base case: 0 gold for an invalid/end position, therefore consider it the end of the prospective path
-        if (foundGold === 0) {
-          return new MinerPath(
-            [nextPosition],
-            foundGold
-          );
-        } else {
-          // recursive case: explore branching of new moves at the new position following the current move
-          // (passing the current move as the previous move for the next search tree)
-          return findOptimumPath(mine, nextPosition, aMove);
-        }
-      }
+       (aMove) => explorePathsFromMove(aMove, mine, position)
     );
     // choose the path that yields the most gold
     possibleMinerPaths.forEach(path => {
