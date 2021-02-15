@@ -23,7 +23,8 @@
   "scripts": {
     "test": "mocha -r esm ./tests/*.test.js",
     "start": "node -r esm --no-warnings ./index.js",
-    "mine": "node -r esm --no-warnings ./index.js"
+    "mine": "node -r esm --no-warnings ./index.js",
+    "highest": "node -r esm --no-warnings ./scripts/computeHighestScore.js"
   },
   "main": "./index.js",
   "engines": {
