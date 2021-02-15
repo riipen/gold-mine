@@ -57,7 +57,7 @@ const move = async (mine, position = null, yStart = null) => {
       prevMove = new Position(nextPosition.x - position.x, nextPosition.y - position.y);
       position = nextPosition;
     }
-    optimumPathPositionsStack = (await findOptimumPath(mine, position, prevMove)).pathPositions;
+    optimumPathPositionsStack = (findOptimumPath(mine, position, prevMove)).pathPositions;
     // the initial position in the path positions stack is disregarded at the root level call of findOptimumPath, since the miner is already at this position
     optimumPathPositionsStack.pop();
   } else {

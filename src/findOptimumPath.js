@@ -17,15 +17,15 @@ export const Moves = Object.freeze({
  * @param {object} position - The current position of the miner
  * @param {object} previousMove - The previous move of the miner to reach the current position
  */
-const findOptimumPath = async (mine, position, previousMove = null) => {
+const findOptimumPath = (mine, position, previousMove = null) => {
     let maxKnownGold = 0;
     let chosenMinerPath = new MinerPath();
     // select available moves by filtering out the previous move,
     // or simply accepting them all if no previous move was performed (ie. if this is the first position)
     const availableMoves = Object.values(Moves).filter(aMove => previousMove === null || aMove.y !== previousMove.y);
     // explore path options available to the given position based on available moves.
-    const pathOptionsPromises = availableMoves.map(
-      async (aMove) => {
+    const possibleMinerPaths = availableMoves.map(
+       (aMove) => {
         // use the move object as a position delta to calculate the next position
         const nextPosition = new Position(position.x + aMove.x, position.y + aMove.y);
         // count the gold at the next position if the position is valid
@@ -48,12 +48,10 @@ const findOptimumPath = async (mine, position, previousMove = null) => {
         } else {
           // recursive case: explore branching of new moves at the new position following the current move
           // (passing the current move as the previous move for the next search tree)
-          return await findOptimumPath(mine, nextPosition, aMove);
+          return findOptimumPath(mine, nextPosition, aMove);
         }
       }
     );
-    // wait for all asynchronously computed paths to be completed
-    const possibleMinerPaths = await Promise.all(pathOptionsPromises);
     // choose the path that yields the most gold
     possibleMinerPaths.forEach(path => {
       if (path.goldFromPath >= maxKnownGold) {
