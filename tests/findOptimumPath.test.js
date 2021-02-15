@@ -1,6 +1,7 @@
 import * as assert from "assert";
 import Position from '../src/position';
-import move, {findOptimumPath} from '../src/move'
+import findOptimumPath from "../src/findOptimumPath";
+import move from '../src/move'
 import MinerPath from '../src/MinerPath';
 
 const positionToString = (p) => `(${p.x}, ${p.y})`;
