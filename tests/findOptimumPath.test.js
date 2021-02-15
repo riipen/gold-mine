@@ -1,10 +1,22 @@
 import * as assert from "assert";
 import Position from '../src/position';
-import {findOptimumPath, Moves} from '../src/move'
+import move, {findOptimumPath} from '../src/move'
 import MinerPath from '../src/MinerPath';
 
 const positionToString = (p) => `(${p.x}, ${p.y})`;
 
+const run = async (mine) => {
+    let gold = 0;
+    let position = await move(mine);
+    while (position.x < mine[0].length - 1 && position.isValid(mine)) {
+        position = await move(mine, position);
+    
+        if (!position.isValid(mine) || mine[position.y][position.x] === 0) break;
+    
+        gold += mine[position.y][position.x];
+      }
+    return gold;
+};
 describe('Optimum path algorithm', () => {
     it('should find expected optimum path through 5x5 mine matrix, given an initial position of (0, 2)', async () => {
         const mine = [
@@ -17,11 +29,11 @@ describe('Optimum path algorithm', () => {
         const startPosition = new Position(0, 2);
         const expectedOptimumPath = new MinerPath(
             [
-                new Position(0, 2),
-                new Position(1, 3),
-                new Position(2, 3),
+                new Position(4, 4),
                 new Position(3, 4),
-                new Position(4, 4)
+                new Position(2, 3),
+                new Position(1, 3),
+                new Position(0, 2)
             ],
             24
         );
@@ -29,24 +41,38 @@ describe('Optimum path algorithm', () => {
         assert.deepStrictEqual(foundPath.pathPositions, expectedOptimumPath.pathPositions, `expected path positions: ${expectedOptimumPath.pathPositions.map(positionToString)} \n but instead resolved the following path: ${foundPath.pathPositions.map(positionToString)}`);
         assert.strictEqual(foundPath.goldFromPath, expectedOptimumPath.goldFromPath, `expected ${expectedOptimumPath.goldFromPath} amount of gold from path, but got ${foundPath.goldFromPath} amount of gold instead`)
     });
-    it('should complete its computation through the luna mine within reasonable time of 5 seconds', async () => {
+    it('should obtain 62 gold from Luna Mine when starting at position (0,0', async () => {
         const lunaMine = require('../mines/luna').default;
-        const randomY = Math.random() * (lunaMine.length);
-        const position = new Position(0, Math.floor(randomY));
-        const reasonableTimeSeconds = 5;
-        const startTimeMs = Date.now();
-        await findOptimumPath(lunaMine, position);
-        const endTimeMs = Date.now();
-        assert.ok((endTimeMs - startTimeMs) < (1000 * reasonableTimeSeconds), `algorithm did not complete processing the Luna Mine within reasonable time of ${reasonableTimeSeconds} seconds`);
+        const position = new Position(0, 0);
+        const gold =( await findOptimumPath(lunaMine, position)).goldFromPath;
+        assert.strictEqual(gold, 62, `expected 62 gold from Luna Mine, but got ${gold}`);    
     });
-    it('should complete its computation through the mars mine within reasonable time of 5 seconds', async () => {
-        const marsMine = require('../mines/mars').default;
-        const randomY = Math.random() * (marsMine.length);
-        const position = new Position(0, Math.floor(randomY));
+    it('should complete its computation through the Luna mine within reasonable time of 5 seconds', async () => {
+        const lunaMine = require('../mines/luna').default;
+        const position = new Position(0, 0);
         const reasonableTimeSeconds = 5;
         const startTimeMs = Date.now();
-        await findOptimumPath(marsMine, position);
+        await run(lunaMine, position);
         const endTimeMs = Date.now();
-        assert.ok((endTimeMs - startTimeMs) < (1000 * reasonableTimeSeconds), `algorithm did not complete processing the Mars Mine within reasonable time of ${reasonableTimeSeconds} seconds`);
+        const durationSeconds = (endTimeMs - startTimeMs) / 1000;
+        assert.ok(durationSeconds < reasonableTimeSeconds, `algorithm did not complete processing the Luna Mine within reasonable time of ${reasonableTimeSeconds} seconds (took ${durationSeconds} seconds)`);
+    });
+    it('should complete its computation through the Mars mine within reasonable time of 5 seconds', async () => {
+        const marsMine = require('../mines/mars').default;
+        const reasonableTimeSeconds = 10;
+        const startTimeMs = Date.now();
+        await run(marsMine);
+        const endTimeMs = Date.now();
+        const durationSeconds = (endTimeMs - startTimeMs) / 1000;
+        assert.ok(durationSeconds < reasonableTimeSeconds, `algorithm did not complete processing the Mars Mine within reasonable time of ${reasonableTimeSeconds} seconds (took ${durationSeconds} seconds)`);
+    });
+    it('should complete its computation through the Jupiter mine within reasonable time of 5 seconds', async () => {
+        const JupiterMine = require('../mines/jupiter').default;
+        const reasonableTimeSeconds = 10;
+        const startTimeMs = Date.now();
+        await run(JupiterMine);
+        const endTimeMs = Date.now();
+        const durationSeconds = (endTimeMs - startTimeMs) / 1000;
+        assert.ok(durationSeconds < reasonableTimeSeconds, `algorithm did not complete processing the Mars Mine within reasonable time of ${reasonableTimeSeconds} seconds (took ${durationSeconds} seconds)`);
     });
 });
