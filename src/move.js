@@ -1,6 +1,8 @@
 import Position from "./position.js";
+import { directions, getFirstHighY } from "./helper";
 
-let movedRight;
+let init;
+let currentDir;
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -25,14 +27,57 @@ const move = (mine, position) => {
 
   let newY;
 
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
+  if (!init) {
+    newY = (position && position.y) || getFirstHighY(mine, directions);
+    init = true;
   } else {
-    newY = (position && position.y + 1) || 0;
+    newY = position.y;
 
-    movedRight = false;
+    const { up, str8, down } = directions(mine, newY, newX);
+
+    if (!currentDir) {
+      if (up >= str8 && up >= down) {
+        newY = newY - 1;
+        currentDir = "up";
+      } else if (down >= str8 && down >= up) {
+        newY = newY + 1;
+        currentDir = "down";
+      } else {
+        newY = newY;
+        currentDir = "str8";
+      }
+    } else {
+      if (currentDir === "up") {
+        if (down >= str8) {
+          newY = newY + 1;
+          currentDir = "down";
+        } else {
+          newY = newY;
+          currentDir = "str8";
+        }
+      } else if (currentDir === "down") {
+        if (up >= str8) {
+          newY = newY - 1;
+          currentDir = "up";
+        } else {
+          newY = newY;
+          currentDir = "str8";
+        }
+      } else {
+        if (up >= down) {
+          newY = newY - 1;
+          currentDir = "up";
+        } else {
+          newY = newY + 1;
+          currentDir = "down";
+        }
+      }
+    }
+
+    if (mine[newY][newX] === 0) {
+      init = false;
+      currentDir = false;
+    }
   }
 
   return new Position(newX, newY);
