@@ -22,15 +22,21 @@
   },
   "scripts": {
     "start": "node -r esm --no-warnings ./index.js",
-    "mine": "node -r esm --no-warnings ./index.js"
+    "mine": "node -r esm --no-warnings ./index.js",
+    "test": "jest",
+    "test_start": "npm test && npm start"
   },
   "main": "./index.js",
   "engines": {
     "node": ">=10.16.3"
   },
-  "type": "module",
   "dependencies": {
+    "@babel/preset-env": "^7.12.17",
+    "babel-jest": "^26.6.3",
     "esm": "^3.2.25",
     "require-directory": "^2.1.1"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }

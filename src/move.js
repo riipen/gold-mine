@@ -1,41 +1,39 @@
 import Position from "./position.js";
-
-let movedRight;
-
 /**
- * Replace the logic in this function with your own custom movement algorithm.
- *
- * This function should run in a reasonable amount of time and should attempt
- * to collect as much gold as possible.
- *
- * Remember, landing outside the mine's boundary or on a "0" on the mine will
- * result in the run completing.
- *
  * @param  {array} mine - A n x m multidimensional array respresenting the mine.
  * @param  {object} position - The current position of the miner, will be undefined on the first move
- *
  * @return {Position} The new position of the miner.
  */
+
+ let lastMove; 
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
 
-  const newX = (position && position.x + 1) || 0;
-
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
+  if (!position) {
+    // if position is undefined, set last move to sentinel value of -2
+   lastMove = -2;
+    return new Position(0, 0);
   }
+  let r = position.y,
+    c = position.x,
+    bestCurrentMove = -1;
+  let nextPos, nextMove;
 
-  return new Position(newX, newY);
+  for (let move = -1; move <= 1; move++) {
+    // Out of bounds check and last move check
+    if (r + move < 0 || r + move >= mine.length || move == lastMove)
+      continue;
+
+    let moveValue = mine[r + move][c + 1];
+
+    if (moveValue > bestCurrentMove) {
+      nextPos = [r + move, c + 1];
+      nextMove = move;
+      bestCurrentMove = moveValue;
+    }
+  }
+  lastMove = nextMove;
+
+  return new Position(nextPos[1], nextPos[0]);
 };
 
 export default move;
