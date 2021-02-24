@@ -22,7 +22,8 @@
   },
   "scripts": {
     "start": "node -r esm --no-warnings ./index.js",
-    "mine": "node -r esm --no-warnings ./index.js"
+    "mine": "node -r esm --no-warnings ./index.js",
+    "test": "jest"
   },
   "main": "./index.js",
   "engines": {
@@ -31,6 +32,8 @@
   "type": "module",
   "dependencies": {
     "esm": "^3.2.25",
+    "jest": "^26.6.3",
+    "lodash": "^4.17.21",
     "require-directory": "^2.1.1"
   }
 }
