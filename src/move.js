@@ -1,4 +1,7 @@
 import Position from "./position.js";
+import { getPathToMaxGold } from "./utils.js";
+
+let path;
 
 let movedRight;
 
@@ -17,25 +20,33 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
+  if (!path) {
+    path = getPathToMaxGold(mine).path;
+  }
+
+  const newX = (position && position.x + 1) || 0;
+
+  return path[newX];
+
   // TODO: write logic for miner. The current approach naive approach is to simply:
   //   1. Start at (0,0)
   //   2. Always moves right
 
-  const newX = (position && position.x + 1) || 0;
+  // const newX = (position && position.x + 1) || 0;
 
-  let newY;
+  // let newY;
 
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
+  // if (!movedRight) {
+  //   newY = (position && position.y) || 0;
 
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
+  //   movedRight = true;
+  // } else {
+  //   newY = (position && position.y + 1) || 0;
 
-    movedRight = false;
-  }
+  //   movedRight = false;
+  // }
 
-  return new Position(newX, newY);
+  // return new Position(newX, newY);
 };
 
 export default move;
