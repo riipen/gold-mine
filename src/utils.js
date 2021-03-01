@@ -31,7 +31,13 @@ const getSomething = (candidates, currGold, currPos, map, prevDir) => {
     }
   });
 
-  return { path: [currPos, ...max.path], totalGold: currGold + max.totalGold };
+  const foo = { path: [currPos, ...max.path], totalGold: currGold + max.totalGold };
+  if (prevDir) {
+    const key = `${prevDir}-${currPos}`;
+    map[key] = foo;
+  }
+
+  return foo;
 };
 
 /**
@@ -66,18 +72,30 @@ const findPaths = (mine, prevDir, row, col, map) => {
 
     return getSomething([up, right, down], gold, currPos, map, prevDir);
   } else if (prevDir === "up") {
+    if (map[`${prevDir}-${currPos}`]) {
+      return map[`${prevDir}-${currPos}`];
+    }
+
     // Previous move was diagonally up, so we have two options, move to the right or diagonally down
     const right = findPaths(mine, "right", row, col + 1, map);
     const down = findPaths(mine, "down", row + 1, col + 1, map);
 
     return getSomething([right, down], gold, currPos, map, prevDir);
   } else if (prevDir === "right") {
+    if (map[`${prevDir}-${currPos}`]) {
+      return map[`${prevDir}-${currPos}`];
+    }
+
     // Previous move was right, so we have two options, move to diagonally up or diagonally down
     const up = findPaths(mine, "up", row - 1, col + 1, map);
     const down = findPaths(mine, "down", row + 1, col + 1, map);
 
     return getSomething([up, down], gold, currPos, map, prevDir);
   } else if (prevDir === "down") {
+    if (map[`${prevDir}-${currPos}`]) {
+      return map[`${prevDir}-${currPos}`];
+    }
+
     // Previous move was diagonally down, so we have two options, move to diagonally up or right
     const up = findPaths(mine, "up", row - 1, col + 1, map);
     const right = findPaths(mine, "right", row, col + 1, map);
