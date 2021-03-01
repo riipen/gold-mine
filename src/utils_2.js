@@ -64,7 +64,7 @@ const getPath = (mine, map, direction, position) => {
     return [position];
   }
 
-  return [...map[row][col][direction].path];
+  return map[row][col][direction].path;
 };
 
 /**
