@@ -1,3 +1,7 @@
+/**
+ * Failed attempt with recursion
+ */
+
 import Position from "./position.js";
 
 /**
