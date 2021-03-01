@@ -1,5 +1,6 @@
 import Position from "./position.js";
 import { getPathToMaxGold } from "./utils.js";
+import { iterate } from "./utils_2.js";
 
 let path;
 
@@ -21,7 +22,7 @@ let movedRight;
  */
 const move = (mine, position) => {
   if (!path) {
-    path = getPathToMaxGold(mine).path;
+    path = iterate(mine).path;
   }
 
   const newX = (position && position.x + 1) || 0;
