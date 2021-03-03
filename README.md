@@ -7,9 +7,9 @@ Riipen's technical interview "Gold Mine" problem.
 Given a gold mine of n \* m dimensions, design an algorithm for a gold miner to collect
 as much gold as possible. Each field in this mine contains a positive integer
 which is the amount of gold in that space. The miner starts at the first column but can be at any row.
-The miner can only move right, diagonally right and up, or diagonally right and down. The miner
-cannot repeat it's previous move (ie. if it's previous move was diagonally right and up, it can
-only move right or diagonally right and down on its current move).
+The miner can only move right, diagonally right upwards, or diagonally right downwards. The miner
+cannot repeat it's previous move (ie. if it's previous move was diagonally right upwards, it can
+only move right or diagonally right downwards on its current move).
 
 ![Gold mine diagram](https://i.imgur.com/pmb9XCA.png "Gold Mine Diagram")
 
