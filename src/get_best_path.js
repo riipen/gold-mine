@@ -83,6 +83,29 @@ function analyzeMineConstructor(getIsPositionValid) {
   }
 }
 
+function generateBestPathConstructor() {
+  return function generateBestPath(mine) {
+    const bestPath = [];
+    let currentRow = 0;
+
+    mine.forEach(row => {
+      row.forEach((column, columnIndex) => {
+        if (columnIndex === 0 && bestStartRow) {
+          currentRow = bestStartRow;
+        }
+
+        bestPath[columnIndex] = memoizedPaths[columnIndex][currentRow.toString()];
+
+        if (memoizedPaths[columnIndex] && memoizedPaths[columnIndex][currentRow.toString()] && memoizedPaths[columnIndex][currentRow.toString()].bestMove) {
+          currentRow += memoizedPaths[columnIndex][currentRow.toString()].bestMove;
+        }
+      });
+    })
+
+    return bestPath;
+  }
+}
+
 const getBestPath = getBestPathConstructor(
   analyzeMineConstructor(getIsPositionValid),
   generateBestPathConstructor(),
