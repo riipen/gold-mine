@@ -23,6 +23,7 @@ function getBestPathConstructor(analyzeMine, generateBestPath) {
     mine.forEach(async (row, index) => {
       let result = await analyzeMine(0, index, mine);
 
+      // if the returned result is greater than the current best score, a better path has been found
       if (result > bestScore) {
         bestStartRow = index;
         bestScore = result;
