@@ -30,15 +30,25 @@ function getBestPathConstructor(analyzeMine, generateBestPath) {
     });
 
     return generateBestPath(mine);
-    let memoizedPaths;
+  }
+}
+
+function getIsPositionValid(x, y, mine) {
+  return !(x < 0 || x >= mine.length || y >= mine[0].length || mine[y][x] === 0);
+}
 
 
   }
 }
 
-const getBestPath = getBestPathConstructor();
+const getBestPath = getBestPathConstructor(
+  analyzeMineConstructor(getIsPositionValid),
+  generateBestPathConstructor(),
+);
 
 export {
   getBestPath,
   getBestPathConstructor,
+  analyzeMineConstructor,
+  generateBestPathConstructor,
 }
