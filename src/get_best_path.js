@@ -24,6 +24,7 @@ function getBestPathConstructor(analyzeMine, generateBestPath) {
       let result = await analyzeMine(0, index, mine);
 
       // if the returned result is greater than the current best score, a better path has been found
+      // At this top level, a better result indicates a better starting row
       if (result > bestScore) {
         bestStartRow = index;
         bestScore = result;
@@ -63,22 +64,24 @@ function analyzeMineConstructor(getIsPositionValid) {
     let bestScore = 0;
     let result;
   
+    // Since this is a brute force attempt at finding the best path, we need to try all possible moves
     allowableMoves.forEach(async move => {
+      // but not the previous one
       if (move != previousMove) {
+        // on the next step, we can't reuse this move/direction
+        previousMove = move;
+
         result = await analyzeMine(x + 1, y + move, mine);
 
+        // if a better result has been found, update the best move for this cell
         if (result > bestScore) {
-          bestScore = result;
-          bestMove = move;
-          previousMove = move;
+          memoizedPaths[x][y.toString()] = {
+            bestScore,
+            bestMove,
+          };
         }
       }
     });
-  
-    memoizedPaths[x][y.toString()] = {
-      bestScore,
-      bestMove,
-    };
   
     return bestScore + mine[y][x];
   }
