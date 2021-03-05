@@ -37,7 +37,49 @@ function getIsPositionValid(x, y, mine) {
   return !(x < 0 || x >= mine.length || y >= mine[0].length || mine[y][x] === 0);
 }
 
+function analyzeMineConstructor(getIsPositionValid) {
+  return async function analyzeMine(x, y, mine) {
+    const isPositionValid = getIsPositionValid(x, y, mine);
 
+    // if position is not valid, then return 0 and try another path
+    if (!isPositionValid) {
+      return 0;
+    }
+
+    // initialize memoized value
+    if (!memoizedPaths[x]) {
+      memoizedPaths[x] = {};
+    }
+
+    if (!memoizedPaths[x][y.toString()]) {
+      memoizedPaths[x][y.toString()] = {};
+    // if we already have a memoized best score, just return it
+    } else if (memoizedPaths[x][y.toString()] && memoizedPaths[x][y.toString()].bestScore) {
+      return memoizedPaths[x][y.toString()].bestScore + mine[y][x];
+    }
+  
+    let bestMove;
+    let bestScore = 0;
+    let result;
+  
+    allowableMoves.forEach(async move => {
+      if (move != previousMove) {
+        result = await analyzeMine(x + 1, y + move, mine);
+
+        if (result > bestScore) {
+          bestScore = result;
+          bestMove = move;
+          previousMove = move;
+        }
+      }
+    });
+  
+    memoizedPaths[x][y.toString()] = {
+      bestScore,
+      bestMove,
+    };
+  
+    return bestScore + mine[y][x];
   }
 }
 
