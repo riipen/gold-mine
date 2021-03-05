@@ -22,12 +22,13 @@ const move = async (mine, position) => {
   // Because the bestPath is closed over, a new variable isn't created each time move is called
   // We need to have something uniquely identifying about the mine to use as the key
   // Turning the first row of the mine into the key isn't great, but in this case should be unique enough
-  if (!bestPath[mine[0].toString()]) {
-    bestPath[mine[0].toString()] = await getBestPath(mine);
+  const mineIdentifier = mine[0].toString()
+  if (!bestPath[mineIdentifier]) {
+    bestPath[mineIdentifier] = await getBestPath(mine);
   }
 
   const newX = (position && position.x + 1) || 0;
-  const newY = bestPath[mine[0].toString()][newX];
+  const newY = bestPath[mineIdentifier][newX];
 
   return new Position(newX, newY);
 };
