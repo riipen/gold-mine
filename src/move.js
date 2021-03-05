@@ -1,6 +1,12 @@
 import Position from "./position.js";
 
-let movedRight;
+import path from "path";
+
+const LOG_DIR = "logs";
+import fs from "fs";
+//import LocalStorage from 'local-storage-es6'
+import store from 'store';
+
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -17,25 +23,93 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
+
+
+
+
   // TODO: write logic for miner. The current approach naive approach is to simply:
   //   1. Start at (0,0)
   //   2. Always moves right
 
-  const newX = (position && position.x + 1) || 0;
 
+  let bestGems, direction, lastDirection, lastPosition;
+
+  //initialize bestGems and direction which store best direction to move to
+  [bestGems, direction] = [0, null];
+
+  let newX;
   let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
+  //if position is undefined its the very first move.
+  if (position === undefined) {
+    newY = 0;
+    newX = 0;
+    store.set('lastDirection', 'initial');
+    let pos = new Position(newX, newY)
+    console.log('**** Initial Position is %d,%d Gems: [%d] ', newX, newY, mine[newY][newX]);
+    console.log('**** Collecting gems at (%d,%d) [%d] gems', newX, newY, mine[newX][newY]);
+    console.log();
+    store.set('lastPosition', pos);
+    return pos;
   }
 
-  return new Position(newX, newY);
+  lastDirection = store.get('lastDirection');
+  lastPosition = store.get('lastPosition');
+  console.log('lastDirection: %o', lastDirection);
+  console.log('lastPosition: %o', lastPosition);
+
+  //this is not the first move so it is safe to explore different mining opportunities
+
+  newX = position.x + 1;
+  newY = position.y;
+
+  let pos = new Position(newX, newY)
+
+  //check possible mining opportunities
+  let right = new Position(pos.x, pos.y);
+  let diagUp = new Position(pos.x, pos.y - 1);
+  let diagDown = new Position(pos.x, pos.y + 1);
+
+
+  //check if diagDown is valid, and if so check mining opportunity
+  if (diagDown.isValid(mine) && lastDirection !== 'diagDown') {
+    let possibleGems = mine[diagDown.y][diagDown.x];
+    bestGems = possibleGems;
+    direction = 'diagDown';
+    newX = diagDown.x;
+    newY = diagDown.y;
+  }
+
+  //check if diagUp is valid and if so check mining opportunity
+  if (diagUp.isValid(mine) && lastDirection !== 'diagUp') {
+    let possibleGems = mine[diagUp.y][diagUp.x];
+    if (possibleGems > bestGems) {
+      bestGems = possibleGems;
+      direction = 'diagUp';
+      newX = diagUp.x;
+      newY = diagUp.y;
+    }
+  }
+
+  //check if right  is valid and if so check mining opportunity
+  if (right.isValid(mine) && lastDirection !== 'right') {
+    let possibleGems = mine[right.y][right.x];
+    if (possibleGems > bestGems) {
+      bestGems = possibleGems;
+      direction = 'right';
+      newX = right.x;
+      newY = right.y;
+    }
+  }
+  // Store direction chosen
+  store.set('lastDirection', direction);
+  console.log('Best Gems are %s at (%d,%d) %d gems', direction, newX,newY, bestGems);
+  console.log('**** Collecting gems at (%d,%d) [%d] gems', newX, newY, mine[newY][newX]);
+  console.log('');
+  pos.x = newX;
+  pos.y = newY;
+  store.set('lastPosition', pos);
+
+  return pos;
 };
 
 export default move;
