@@ -2,7 +2,23 @@ import Position from "./position.js";
 const LOG_DIR = "logs";
 import store from 'store';
 
+const getValidDirections = (position, mine, lastDirection) => {
+  let right = new Position(position.x, position.y);
+  let diagUp = new Position(position.x, position.y - 1);
+  let diagDown = new Position(position.x, position.y + 1);
 
+  let validDirections = [];
+  if (right.isValid(mine) && lastDirection !== 'right'){
+    validDirections.push('right');
+  }
+  if (diagUp.isValid(mine) && lastDirection !== 'diagUp'){
+    validDirections.push('diagUp');
+  }
+  if (diagDown.isValid(mine) && lastDirection !== 'diagDown'){
+    validDirections.push('diagDown');
+  }
+  return validDirections;
+}
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
@@ -19,7 +35,7 @@ import store from 'store';
  */
 const move = (mine, position) => {
 
-  let bestGems, direction, lastDirection, lastPosition;
+  let bestGems, direction, lastDirection, lastPosition, validDirections;
 
   //initialize bestGems and direction which store best direction to move to
   [bestGems, direction] = [0, null];
@@ -52,11 +68,13 @@ const move = (mine, position) => {
 
   let pos = new Position(newX, newY)
 
-  //check possible mining opportunities
   let right = new Position(pos.x, pos.y);
   let diagUp = new Position(pos.x, pos.y - 1);
   let diagDown = new Position(pos.x, pos.y + 1);
-  
+
+  validDirections = getValidDirections(position,mine,lastDirection);
+  console.log('valid directions are %o',validDirections);
+
   //check if diagDown is valid, and if so check mining opportunity
   if (diagDown.isValid(mine) && lastDirection !== 'diagDown') {
     let possibleGems = mine[diagDown.y][diagDown.x];
