@@ -1,7 +1,26 @@
+// Memoizing the previously analyzed paths is essential here to save time when iterating over the mine
+// Instead of calculating every path again, we can grab a memoized value
+const memoizedPaths = {};
+const moves = [-1, 0, 1];
+let previousMove;
+
+function getPathsConstructor(analyzeMine) {
+  return async function getPaths(mine) {
+
+    // We start by iterating over each row, keeping track of the best 
+    mine.forEach(async (row, y) => {
+      const result = await analyzeMine(0, y, mine);
+
+      if (result > bestScore) {
+        memoizedPaths.bestStartingY = y;
+      }
+    });
+
+    return memoizedPaths;
+  }
+}
+
 function analyzeMineConstructor(getIsPositionValid) {
-  // Memoizing the previously analyzed paths is essential here to save time when iterating over the mine
-  // Instead of calculating every path again, we can grab a memoized value
-  let memoizedPaths = {};
   return async function analyzeMine(x, y, mine) {
     const isPositionValid = getIsPositionValid(x, y, mine);
 
@@ -12,32 +31,26 @@ function analyzeMineConstructor(getIsPositionValid) {
 
     // initialize memoized value
     if (!memoizedPaths[`${x},${y}`]) {
-      memoizedPaths[`${x},${y}`] = {};
+      memoizedPaths[`${x},${y}`] = {
+        bestScore: 0,
+        bestMove: null,
+      };
+    } else if (memoizedPaths[`${x},${y}`] && memoizedPaths[`${x},${y}`].bestScore) {
+      return memoizedPaths[`${x},${y}`].bestScore + mine[y][x];
     }
 
-    if (!memoizedPaths[x][y.toString()]) {
-      memoizedPaths[x][y.toString()] = {};
-    // if we already have a memoized best score, just return it
-    } else if (memoizedPaths[x][y.toString()] && memoizedPaths[x][y.toString()].bestScore) {
-      return memoizedPaths[x][y.toString()].bestScore + mine[y][x];
-    }
-  
-    let bestMove;
-    let bestScore = 0;
-    let result;
-  
     // Since this is a brute force attempt at finding the best path, we need to try all possible moves
-    allowableMoves.forEach(async move => {
+    moves.forEach(async move => {
       // but not the previous one
       if (move != previousMove) {
         // on the next step, we can't reuse this move/direction
         previousMove = move;
 
-        result = await analyzeMine(x + 1, y + move, mine);
+        const result = await analyzeMine(x + 1, y + move, mine);
 
         // if a better result has been found, update the best move for this cell
         if (result > bestScore) {
-          memoizedPaths[x][y.toString()] = {
+          memoizedPaths[`${x},${y}`] = {
             bestScore,
             bestMove,
           };
@@ -54,8 +67,11 @@ function getIsPositionValid(x, y, mine) {
 }
 
 const analyzeMine = analyzeMineConstructor(getIsPositionValid);
+const getPaths = getPathsConstructor(analyzeMine);
 
 export {
   analyzeMine,
   analyzeMineConstructor,
+  getPaths,
+  getPathsConstructor,
 }
