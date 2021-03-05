@@ -31,6 +31,7 @@
   "type": "module",
   "dependencies": {
     "esm": "^3.2.25",
+    "store": "^2.0.12",
     "require-directory": "^2.1.1"
   }
 }
