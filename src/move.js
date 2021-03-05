@@ -1,7 +1,6 @@
 import Position from "./position.js";
 
-let movedRight;
-
+let movedRight, movedRightUp, movedRightDown;
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
@@ -17,25 +16,131 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
+   //helper function that determines the mined value if the miner moves to the right
+   const getRightMoveValue = () => {  
+    let newX = position.x + 1;
+    let newY = position.y;
+    let newPosition = new Position(newX, newY);
+  
+    if(newPosition.isValid(mine)){
+      return mine[newX][newY];
+    }
 
-  const newX = (position && position.x + 1) || 0;
-
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
+    if(mine[newX][newY] === 0) return 0
+    else return null;
+  }
+  //helper function that determines the mined value if the miner moves to the right up 
+  const getRightUpMoveValue = () => {  
+    let newX = position.x + 1;
+    let newY = position.y - 1;
+    let newPosition = new Position(newX, newY);
+  
+    if(newPosition.isValid(mine)){
+      return mine[newX][newY];
+    }
+    
+    if(mine[newX][newY] === 0) return 0
+    else return null;
+  }
+  //helper function that determines the mined value if the miner moves to the right down
+  const getRightDownMoveValue = () => {  
+    let newX = position.x + 1;
+    let newY = position.y + 1;
+    let newPosition = new Position(newX, newY);
+  
+    if(newPosition.isValid(mine)){
+      return mine[newX][newY];
+    }
+    
+    if(mine[newX][newY] === 0) return 0
+    else return null;
   }
 
-  return new Position(newX, newY);
+  if(!position) return new Position(0, 0);
+
+  if(movedRight){
+    let rightUpMoveValue = getRightUpMoveValue();
+    let rightDownMoveValue = getRightDownMoveValue();
+
+    let maxValue = Math.max(rightUpMoveValue, rightDownMoveValue);
+
+    if(maxValue === rightUpMoveValue){
+      movedRightUp = true;
+      movedRight = false;
+      movedRightDown = false;
+      return new Position(position.x + 1, position.y - 1);
+    } 
+    if(maxValue === rightDownMoveValue){
+      movedRightDown = true;
+      movedRight = false;
+      movedRightUp = false;
+      return new Position(position.x + 1, position.y + 1);
+    }
+
+  } else if (movedRightUp){
+    let rightMoveValue = getRightMoveValue();
+    let rightDownMoveValue = getRightDownMoveValue();
+
+    let maxValue = Math.max(rightMoveValue, rightDownMoveValue);
+
+    if(maxValue === rightMoveValue){
+      movedRight = true;
+      movedRightUp = false;
+      movedRightDown = false;
+      return new Position(position.x + 1, position.y);
+    } 
+    if(maxValue === rightDownMoveValue){
+      movedRightDown = true;
+      movedRight = false;
+      movedRightUp = false;
+      return new Position(position.x + 1, position.y + 1);
+    }
+
+  } else if (movedRightDown){
+    let rightMoveValue = getRightMoveValue();
+    let rightUpMoveValue = getRightUpMoveValue();
+
+    let maxValue = Math.max(rightMoveValue, rightUpMoveValue);
+
+    if(maxValue === rightMoveValue){
+      movedRight = true;
+      movedRightUp = false;
+      movedRightDown = false;
+      return new Position(position.x + 1, position.y);
+    } 
+    if(maxValue === rightUpMoveValue){
+      movedRightUp = true;
+      movedRight = false;
+      movedRightDown = false;
+      return new Position(position.x + 1, position.y - 1);
+    } 
+
+  } else {
+    let rightMoveValue = getRightMoveValue();
+    let rightUpMoveValue = getRightUpMoveValue();
+    let rightDownMoveValue = getRightDownMoveValue();
+
+    let maxValue = Math.max(rightMoveValue, rightUpMoveValue, rightDownMoveValue);
+
+    if(maxValue === rightMoveValue){
+      movedRight = true;
+      movedRightUp = false;
+      movedRightDown = false;
+      return new Position(position.x + 1, position.y);
+    } 
+    if(maxValue === rightUpMoveValue){
+      movedRightUp = true;
+      movedRight = false;
+      movedRightDown = false;
+      return new Position(position.x + 1, position.y - 1);
+    } 
+    if(maxValue === rightDownMoveValue){
+      movedRightDown = true;
+      movedRight = false;
+      movedRightUp = false;
+      return new Position(position.x + 1, position.y + 1);
+    }
+  }
 };
 
 export default move;

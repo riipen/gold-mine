@@ -14,37 +14,45 @@ import move from "./move.js";
 const run = async (mine, logFile, yStart = 0) => {
   if (!mine) throw new Error("a mine is required");
   if (!logFile) throw new Error("a logFile is required");
+  
+  let maxScore = 0;
 
-  // Initial position
-  let position = await move(mine);
+  for(let yIdx = 0; yIdx < mine.length - 1; yIdx++){
+    // Initialize position for each tour run based off an ascending initial row position (i.e. yIdx)
+    let position = await move(mine, new Position(0, yIdx));
+    //console.log(position);
+    // Track where the current X value should be
+    let currentX = 1;
 
-  // Track where the current X value should be
-  let currentX = 0;
+    // A running tally of the score
+    let score = mine[position.y][position.x] + mine[0][yIdx];
 
-  // A running tally of the score
-  let score = mine[position.y][position.x];
-
-  // log the initial position
-  log(logFile, position);
-
-  while (position.x < mine[0].length - 1 && position.isValid(mine)) {
-    if (position.x !== currentX) {
-      throw new Error(
-        `Current position must be at x === ${currentX}, not ${position}`
-      );
-    }
-
-    position = await move(mine, position);
-    currentX++;
-
+    // log the initial position
     log(logFile, position);
 
-    if (!position.isValid(mine) || mine[position.y][position.x] === 0) break;
+    while (position.x < mine[0].length - 1 && position.isValid(mine)) {
+      if (position.x !== currentX) {
+        throw new Error(
+          `Current position must be at x === ${currentX}, not ${position}`
+        );
+      }
 
-    score += mine[position.y][position.x];
+      position = await move(mine, position);
+      //console.log(position);
+      currentX++;
+
+      log(logFile, position);
+
+      if (!position.isValid(mine) || mine[position.y][position.x] === 0) break;
+
+      score += mine[position.y][position.x];
+    }
+
+    if(score >= maxScore) maxScore = score;
   }
 
-  return score;
+  //console.log('The max score is: ' + maxScore);
+  return maxScore;
 };
 
 /**
