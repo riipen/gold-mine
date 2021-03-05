@@ -1,5 +1,5 @@
 import Position from "./position.js";
-import { getBestPath } from "./get_best_path.js";
+import { getBestPath } from "./move/get_best_path.js";
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -19,8 +19,7 @@ import { getBestPath } from "./get_best_path.js";
 let bestPath = {};
 
 const move = async (mine, position) => {
-  // Because the bestPath is closed over, a new variable isn't created each time move is called
-  // We need to have something uniquely identifying about the mine to use as the key
+  // We're not creating a new bestPath variable each time `move` is called, so we need a way uniquely identify each mine's bestPath
   // Turning the first row of the mine into the key isn't great, but in this case should be unique enough
   const mineIdentifier = mine[0].toString()
   if (!bestPath[mineIdentifier]) {
