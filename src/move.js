@@ -1,10 +1,5 @@
 import Position from "./position.js";
-
-import path from "path";
-
 const LOG_DIR = "logs";
-import fs from "fs";
-//import LocalStorage from 'local-storage-es6'
 import store from 'store';
 
 
@@ -24,14 +19,6 @@ import store from 'store';
  */
 const move = (mine, position) => {
 
-
-
-
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
-
-
   let bestGems, direction, lastDirection, lastPosition;
 
   //initialize bestGems and direction which store best direction to move to
@@ -39,6 +26,7 @@ const move = (mine, position) => {
 
   let newX;
   let newY;
+
   //if position is undefined its the very first move.
   if (position === undefined) {
     newY = 0;
@@ -68,8 +56,7 @@ const move = (mine, position) => {
   let right = new Position(pos.x, pos.y);
   let diagUp = new Position(pos.x, pos.y - 1);
   let diagDown = new Position(pos.x, pos.y + 1);
-
-
+  
   //check if diagDown is valid, and if so check mining opportunity
   if (diagDown.isValid(mine) && lastDirection !== 'diagDown') {
     let possibleGems = mine[diagDown.y][diagDown.x];
