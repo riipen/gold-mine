@@ -17,20 +17,25 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
-
-  const newX = (position && position.x + 1) || 0;
-
+  let currentXValue = position && position.x || 0;
+  let nextXValue = position && currentXValue + 1 || 0;
+  let currentYValue = position && position.y || 0;
+  let nextYValue = position && currentYValue + 1 || 0;
+  let newX = (position && currentXValue + 1) || 0;
   let newY;
 
   if (!movedRight) {
-    newY = (position && position.y) || 0;
+    newY = (position && currentYValue) || 0;
 
     movedRight = true;
+
+    // Move Right up when the current value is bigger than the next to the right
+    if (mine[currentYValue][currentXValue] > mine[nextYValue][nextXValue]) {
+      newY = newY - 1;
+    }
+
   } else {
-    newY = (position && position.y + 1) || 0;
+    newY = (position && currentYValue + 1) || 0;
 
     movedRight = false;
   }
