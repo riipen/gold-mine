@@ -17,11 +17,11 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  let currentXValue = position && position.x || 0;
-  let nextXValue = position && currentXValue + 1 || 0;
+  let currentXPosition = position && position.x || 0;
+  let nextXPosition = position && currentXPosition + 1 || 0;
   let currentYValue = position && position.y || 0;
-  let nextYValue = position && currentYValue + 1 || 0;
-  let newX = (position && currentXValue + 1) || 0;
+  let nextYPosition = position && currentYValue + 1 || 0;
+  let newX = (position && currentXPosition + 1) || 0;
   let newY;
 
   if (!movedRight) {
@@ -30,10 +30,10 @@ const move = (mine, position) => {
     movedRight = true;
 
     // Move Right up when the current value is bigger than the next to the right
-    if (mine[currentYValue][currentXValue] > mine[nextYValue][nextXValue]) {
+    if (mine[currentYValue][currentXPosition] > mine[nextYPosition][nextXPosition]) {
       newY = newY - 1;
     }
-
+    
   } else {
     newY = (position && currentYValue + 1) || 0;
 
