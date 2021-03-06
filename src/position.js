@@ -22,7 +22,7 @@ class Position {
    *   1. Being out of bounds
    *   2. Being on a "0" value position on the map
    *
-   * @param  {array} map - A n x m multidimensional array respresenting the map.
+   * @param  {array} map - A n x m multidimensional array representing the map.
    *
    * @return {Boolean} Whether the position is valid for the map.
    */
@@ -37,7 +37,7 @@ class Position {
   /**
    * Writes the position's x and y values to a string.
    *
-   * @return {String} The strigified version of the position.
+   * @return {String} The stringified version of the position.
    */
   toString() {
     return `${this.x},${this.y}`;

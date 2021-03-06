@@ -5,7 +5,7 @@ import move from "./move.js";
 /**
  * Given a mine, runs the miner through the mine collecting gold along the way.
  *
- * @param  {array} mine - A n x m multidimensional array respresenting the mine.
+ * @param  {array} mine - A n x m multidimensional array representing the mine.
  * @param  {string} logFile - A file location where moves of the miner should be logged to.
  * @param  {Number} yStart - The y dimension starting position for the miner.
  *

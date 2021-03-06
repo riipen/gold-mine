@@ -13,7 +13,7 @@ const DIRECTIONS = {
  * Given a mine, output log file, and a final score, validates that the steps
  * taken are valid, as well that the final score is correct.
  *
- * @param  {array} mine - A n x m multidimensional array respresenting the mine.
+ * @param  {array} mine - A n x m multidimensional array representing the mine.
  * @param  {string} logFile - A file location where moves of the miner were recorded.
  * @param  {Number} mineScore - The final score to validate against the moves made.
  *
