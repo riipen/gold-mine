@@ -19,23 +19,23 @@ let movedRight;
 const move = (mine, position) => {
   let currentXPosition = position && position.x || 0;
   let nextXPosition = position && currentXPosition + 1 || 0;
-  let currentYValue = position && position.y || 0;
-  let nextYPosition = position && currentYValue + 1 || 0;
+  let currentYPosition = position && position.y || 0;
+  let nextYPosition = position && currentYPosition + 1 || 0;
   let newX = (position && currentXPosition + 1) || 0;
   let newY;
 
   if (!movedRight) {
-    newY = (position && currentYValue) || 0;
+    newY = (position && currentYPosition) || 0;
 
     movedRight = true;
 
-    // Move Right up when the current value is bigger than the next to the right
-    if (mine[currentYValue][currentXPosition] > mine[nextYPosition][nextXPosition]) {
+    // Move Right up when the current value is bigger than the next right down
+    if (mine[currentYPosition][currentXPosition] > mine[nextYPosition][nextXPosition]) {
       newY = newY - 1;
     }
     
   } else {
-    newY = (position && currentYValue + 1) || 0;
+    newY = (position && currentYPosition + 1) || 0;
 
     movedRight = false;
   }
