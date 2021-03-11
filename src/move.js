@@ -18,10 +18,10 @@ let currDirection;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // Greedy Algorithm
+  // Dynamic Programming
   
 
-  const newX = (position && position.x + 1) || 0;
+  const newX = (position && position.x - 1) || 0;
   let moveOps = Array(-1,0,1);
 
   let newY;

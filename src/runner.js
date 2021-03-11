@@ -4,22 +4,6 @@ import move from "./move.js";
 import validator from "./validator.js";
 import Position from "./position.js";
 
-const LOG_DIR = "logs";
-/**
- * Given a file name, deletes any existing file and creates a new blank one.
- *
- * @param  {string} logFile - The name of the file to delete and re-create.
- *
- * @return {undefined}
- */
-const resetLogFile = logFile => {
-  if (!fs.existsSync(LOG_DIR)) {
-    fs.mkdirSync(LOG_DIR);
-  }
-
-  fs.writeFileSync(logFile, "");
-};
-
 /**
  * Given a mine, runs the miner through the mine collecting gold along the way.
  *
@@ -34,20 +18,18 @@ const run = async (mine, logFile, yStart = 0) => {
   if (!logFile) throw new Error("a logFile is required");
 
   let finalScore = 0;
-  let position = new Position(0, 0);
+  let position = new Position(mine[0].lenth-1, 0);
   let maxIndex = 0;
   let paths = Array();
-  
-
 
   for (var i = 0; i < mine.length; i++) {
-    let currentX = 0;
-    position = new Position(0, i);
+    let currentX = mine[0].length-1;
+    position = new Position(mine[0].length - 1, i);
     let score = mine[position.y][position.x];
     let path = Array();
     path.push(position);
     
-    while (position.x < mine[0].length - 1 && position.isValid(mine)) {
+    while (position.x > 0 && position.isValid(mine)) {
       if (position.x !== currentX) {
         throw new Error(
           `Current position must be at x === ${currentX}, not ${position}`
@@ -55,7 +37,7 @@ const run = async (mine, logFile, yStart = 0) => {
       }
   
       position = await move(mine, position);
-      currentX++;
+      currentX--;
       path.push(position);
   
   
@@ -74,7 +56,7 @@ const run = async (mine, logFile, yStart = 0) => {
     
   }
 
-  for (var i = 0; i < paths[maxIndex].length; i++) {
+  for (var i = paths[maxIndex].length - 1; i >= 0; i--) {
     log(logFile, paths[maxIndex][i]);
   }
 
