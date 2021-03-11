@@ -41,9 +41,8 @@ const move = (mine, position) => {
       }
       else {
         let tmpPosition = new Position(newX, currY + moveOps[i]);
-        
-        if (currY + moveOps[i] >= 0 && currY + moveOps[i] < mine.length) {
-          if (mine[currY + moveOps[i]][newX] >= currMax) {
+        if (tmpPosition.isValid(mine)) {
+          if (mine[currY + moveOps[i]][newX] > currMax) {
             currMax = mine[currY + moveOps[i]][newX];
             newY = currY + moveOps[i];
           }
@@ -52,8 +51,22 @@ const move = (mine, position) => {
 
     }
 
-    currDirection = newY - currY;
-    return new Position(newX, newY);    
+    if (typeof newY === 'undefined') {
+      for (var i = 0; i < moveOps.length; i++) {
+        if (currY + moveOps[i] >= 0 && currY + moveOps[i] < mine.length) {
+          newY = currY + moveOps[i];
+        }
+      }
+      currDirection = newY - currY;
+      return new Position(newX, newY);
+      
+    }
+    else {
+      currDirection = newY - currY;
+      return new Position(newX, newY);
+    }
+    
+    
     
   }
   else {
