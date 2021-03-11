@@ -1,6 +1,7 @@
 import Position from "./position.js";
 
-let movedRight;
+//let movedRight;
+let currDirection;
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -21,21 +22,46 @@ const move = (mine, position) => {
   //   1. Start at (0,0)
   //   2. Always moves right
 
+  // Greedy Algorithm
+  
+
   const newX = (position && position.x + 1) || 0;
+  let moveOps = Array(-1,0,1);
 
   let newY;
 
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
 
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
+  if (position) {
+    let currY = position.y;
+    let currMax = 0;
+    for (var i = 0; i < moveOps.length; i++) {
 
-    movedRight = false;
+      if (moveOps[i] === currDirection) {
+        continue;
+      }
+      else {
+        let tmpPosition = new Position(newX, currY + moveOps[i]);
+        
+        if (currY + moveOps[i] >= 0 && currY + moveOps[i] < mine.length) {
+          if (mine[currY + moveOps[i]][newX] >= currMax) {
+            currMax = mine[currY + moveOps[i]][newX];
+            newY = currY + moveOps[i];
+          }
+        }
+      }
+
+    }
+
+    currDirection = newY - currY;
+    return new Position(newX, newY);    
+    
+  }
+  else {
+    newY = 0;
+    return new Position(newX, newY);
   }
 
-  return new Position(newX, newY);
+
 };
 
 export default move;

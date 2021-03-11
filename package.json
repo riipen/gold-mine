@@ -31,6 +31,12 @@
   "type": "module",
   "dependencies": {
     "esm": "^3.2.25",
+    "file-system": "^2.2.2",
+    "path": "^0.12.7",
     "require-directory": "^2.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.8",
+    "@babel/node": "^7.13.0"
   }
 }

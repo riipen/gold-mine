@@ -36,10 +36,12 @@ const run = async (mine, logFile, yStart = 0) => {
 
     position = await move(mine, position);
     currentX++;
-
     log(logFile, position);
 
-    if (!position.isValid(mine) || mine[position.y][position.x] === 0) break;
+
+    if (!position.isValid(mine) || mine[position.y][position.x] === 0) {
+      break;
+    }
 
     score += mine[position.y][position.x];
   }
