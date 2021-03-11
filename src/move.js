@@ -18,10 +18,6 @@ let currDirection;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
-
   // Greedy Algorithm
   
 
@@ -53,6 +49,9 @@ const move = (mine, position) => {
 
     if (typeof newY === 'undefined') {
       for (var i = 0; i < moveOps.length; i++) {
+        if (moveOps[i] === currDirection) {
+          continue;
+        }
         if (currY + moveOps[i] >= 0 && currY + moveOps[i] < mine.length) {
           newY = currY + moveOps[i];
         }
