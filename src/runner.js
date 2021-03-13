@@ -21,8 +21,32 @@ const run = async (mine, logFile, yStart = 0) => {
   let position = new Position(mine[0].lenth-1, 0);
   let maxIndex = 0;
   let paths = Array();
+  const mineTracking = Array.from(Array(mine.length), _ => Array(mine[0].length).fill(0));
 
-  for (var i = 0; i < mine.length; i++) {
+  for (var j = mine[0].length -1; j > -1; j--) {
+    for (var i = 0; i < mine.length; i++) {
+
+      let rightValue = 0;
+      let rightUpValue = 0;
+      let rightDownValue = 0;
+
+      if (j != mine[0].length - 1) rightValue = mineTracking[i][j + 1];
+
+      if (i != 0 && j != mine[0].length-1) rightUpValue = mineTracking[i - 1][j + 1];
+
+      if (i != mine.length-1 && j != mine[0].length-1) rightDownValue = mineTracking[i + 1][j + 1];
+
+      mineTracking[i][j] = mine[i][j] + Math.max(rightValue, rightUpValue, rightDownValue);
+      
+    }
+    //console.log(mineTracking);
+  }
+
+  for (var i =0; i < mine.length; i++) {
+    finalScore = Math.max(finalScore, mineTracking[i][0]);
+  }
+
+  /*for (var i = 0; i < mine.length; i++) {
     let currentX = mine[0].length-1;
     position = new Position(mine[0].length - 1, i);
     let score = mine[position.y][position.x];
@@ -54,12 +78,12 @@ const run = async (mine, logFile, yStart = 0) => {
     finalScore = Math.max(score, finalScore);
     paths.push(path);
     
-  }
+  }*/
 
-  for (var i = paths[maxIndex].length - 1; i >= 0; i--) {
+  /*for (var i = paths[maxIndex].length - 1; i >= 0; i--) {
     log(logFile, paths[maxIndex][i]);
-  }
-
+  }*/
+  console.log(finalScore);
   return finalScore;
 };
 
