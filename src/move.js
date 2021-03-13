@@ -21,7 +21,7 @@ const move = (mine, position) => {
   // Dynamic Programming
   
 
-  const newX = (position && position.x - 1) || 0;
+  const newX = (position && position.x + 1) || 0;
   let moveOps = Array(-1,0,1);
 
   let newY;

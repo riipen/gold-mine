@@ -16,11 +16,9 @@ import Position from "./position.js";
 const run = async (mine, logFile, yStart = 0) => {
   if (!mine) throw new Error("a mine is required");
   if (!logFile) throw new Error("a logFile is required");
-
-  let finalScore = 0;
-  let position = new Position(mine[0].lenth-1, 0);
+  
   let maxIndex = 0;
-  let paths = Array();
+  
   const mineTracking = Array.from(Array(mine.length), _ => Array(mine[0].length).fill(0));
 
   for (var j = mine[0].length -1; j > -1; j--) {
@@ -39,52 +37,42 @@ const run = async (mine, logFile, yStart = 0) => {
       mineTracking[i][j] = mine[i][j] + Math.max(rightValue, rightUpValue, rightDownValue);
       
     }
-    //console.log(mineTracking);
   }
 
+  let maxScore = 0;
   for (var i =0; i < mine.length; i++) {
-    finalScore = Math.max(finalScore, mineTracking[i][0]);
-  }
-
-  /*for (var i = 0; i < mine.length; i++) {
-    let currentX = mine[0].length-1;
-    position = new Position(mine[0].length - 1, i);
-    let score = mine[position.y][position.x];
-    let path = Array();
-    path.push(position);
-    
-    while (position.x > 0 && position.isValid(mine)) {
-      if (position.x !== currentX) {
-        throw new Error(
-          `Current position must be at x === ${currentX}, not ${position}`
-        );
-      }
-  
-      position = await move(mine, position);
-      currentX--;
-      path.push(position);
-  
-  
-      if (!position.isValid(mine) || mine[position.y][position.x] === 0) {
-        break;
-      }
-  
-      score += mine[position.y][position.x];
-    }
-
-    if (score > finalScore) {
+    let currMax = maxScore;
+    maxScore = Math.max(maxScore, mineTracking[i][0]);
+    if (maxScore > currMax) {
       maxIndex = i;
     }
-    finalScore = Math.max(score, finalScore);
-    paths.push(path);
-    
-  }*/
+  }
 
-  /*for (var i = paths[maxIndex].length - 1; i >= 0; i--) {
-    log(logFile, paths[maxIndex][i]);
-  }*/
-  console.log(finalScore);
-  return finalScore;
+  let position = new Position(0, maxIndex);
+  let currentX = 0;
+  let score = mine[position.y][position.x];
+  log(logFile, position);
+
+  while (position.x < mine[0].length && position.isValid(mine)) {
+    if (position.x !== currentX) {
+      throw new Error(
+        `Current position must be at x === ${currentX}, not ${position}`
+      );
+    }
+
+    position = await move(mine, position);
+    currentX++;
+    log(logFile, position);
+
+
+    if (!position.isValid(mine) || mine[position.y][position.x] === 0) {
+      break;
+    }
+
+    score += mine[position.y][position.x];
+  }
+
+  return score;
 };
 
 /**
