@@ -24,7 +24,7 @@
     "start": "node -r esm --no-warnings ./index.js",
     "mine": "node -r esm --no-warnings ./index.js",
     "test": "jest --config ./jest.config.json",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "jest --config ./jest.config.json --watch"
   },
   "main": "./index.js",
   "engines": {
