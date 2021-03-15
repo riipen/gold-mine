@@ -14,7 +14,7 @@ const LOG_DIR = "logs";
  *
  * @return {undefined}
  */
-const resetLogFile = logFile => {
+const resetLogFile = (logFile) => {
   if (!fs.existsSync(LOG_DIR)) {
     fs.mkdirSync(LOG_DIR);
   }
