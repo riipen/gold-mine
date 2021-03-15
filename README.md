@@ -1,6 +1,6 @@
 # gold-mine
 
-Riipen's technical interview "Gold Mine" problem.
+An algorithm to solve the "Gold Mine" problem.
 
 # Exercise
 
@@ -13,27 +13,14 @@ only move right or diagonally right downwards on its current move).
 
 ![Gold mine diagram](https://i.imgur.com/pmb9XCA.png "Gold Mine Diagram")
 
-If the miner leaves the mine for any reason (goes outside the dimensions of the mine), gold collection
-will cease and the final score will be the current score.
 
-If the miner lands on a section of the mine that has zero gold (an integer value of 0), gold
-collection will cease and the final score will be the current score.
 
 # Rules
 
-- There is no time limit
-- Use your best discretion with the design of your solution
-- You can ask questions
-- You are free to add packages, tools, or improvements as you see fit
-- We expect you write the kind of feature you would put into production, including tests and documentation as you see fit
-
-# Submission
-
-Fork this repository to your Github account. Make any of the changes you wish to make,
-then submit a pull request back up stream to this repository.
-
-If you can score in the top 10 of all time submissions, your name will be added to our
-[leader board](https://github.com/riipen/gold-mine/wiki/Leader-Board).
+- If the miner leaves the mine for any reason (goes outside the dimensions of the mine), gold collection
+will cease and the final score will be the current score.
+- If the miner lands on a section of the mine that has zero gold (an integer value of 0), gold
+collection will cease and the final score will be the current score.
 
 # Setup
 
@@ -78,14 +65,16 @@ $ npm run mine -- jupiter
 This will run the miner through the "jupiter" mine. (All mines can be found
 in the `mines/` directory.)
 
-# Architecture
+## Run Tests and Lint
 
-The current naive approach to mining can be found in `src/move.js`.
-Your job will be to improve upon the existing implementation in order
-to collect as much gold as possible.
+To run the tests:
 
-You should not need to touch any of the other existing files.
+```bash
+$ npm run test
+```
 
-# Contact
+To run the Lint:
 
-We encourage you to use your best discretion, but also to ask questions and communicate if you need it.
+```bash
+$ npm run lint
+```
