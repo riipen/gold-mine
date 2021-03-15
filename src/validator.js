@@ -1,12 +1,12 @@
-import fs from 'fs';
-import readline from 'readline';
+import fs from "fs";
+import readline from "readline";
 
-import Position from './position.js';
+import Position from "./position.js";
 
 const DIRECTIONS = {
-  DOWN: 'down',
-  RIGHT: 'right',
-  UP: 'up',
+  DOWN: "down",
+  RIGHT: "right",
+  UP: "up",
 };
 
 /**
@@ -20,11 +20,11 @@ const DIRECTIONS = {
  * @return {Boolean} Whether the moves made and final score are valid.
  */
 const validate = async (mine, logFile, mineScore) => {
-  if (!mine) throw new Error('a mine is required')
-  if (!logFile) throw new Error('a logFile is required')
+  if (!mine) throw new Error("a mine is required");
+  if (!logFile) throw new Error("a logFile is required");
 
   const lineReader = readline.createInterface({
-    input: fs.createReadStream(logFile)
+    input: fs.createReadStream(logFile),
   });
 
   let position;
@@ -36,7 +36,7 @@ const validate = async (mine, logFile, mineScore) => {
   let currentDirection;
 
   for await (const line of lineReader) {
-    const step = line.split(',').map((v) => +v);
+    const step = line.split(",").map((v) => +v);
 
     if (!position) {
       position = new Position(step[0], step[1]);
@@ -44,18 +44,14 @@ const validate = async (mine, logFile, mineScore) => {
       // You must always move forward
       if (step[0] !== position.x + 1) valid = false;
 
-      const validY = [
-        position.y + 1,
-        position.y,
-        position.y - 1,
-      ];
+      const validY = [position.y + 1, position.y, position.y - 1];
 
       // You must only move +1, 0 or -1 vertically in any given move
-      if (!validY.includes(step[1])) valid = false
+      if (!validY.includes(step[1])) valid = false;
 
       // You can't go out of bounds
-      if (step[0] > mine[0].length -1) valid = false;
-      if (step[1] > mine.length -1) valid = false;
+      if (step[0] > mine[0].length - 1) valid = false;
+      if (step[1] > mine.length - 1) valid = false;
 
       if (step[1] === position.y + 1) {
         currentDirection = DIRECTIONS.UP;
@@ -72,7 +68,7 @@ const validate = async (mine, logFile, mineScore) => {
     // Breaks out of file reading
     if (!valid) lineReader.close();
 
-    score += mine[step[1]][step[0]]
+    score += mine[step[1]][step[0]];
 
     // Move up to the valid position
     position.x = step[0];

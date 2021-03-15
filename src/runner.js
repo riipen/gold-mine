@@ -11,6 +11,7 @@ import move from "./move.js";
  *
  * @return {Number} The total gold collected by the miner.
  */
+// eslint-disable-next-line no-unused-vars
 const run = async (mine, logFile, yStart = 0) => {
   if (!mine) throw new Error("a mine is required");
   if (!logFile) throw new Error("a logFile is required");
@@ -29,9 +30,7 @@ const run = async (mine, logFile, yStart = 0) => {
 
   while (position.x < mine[0].length - 1 && position.isValid(mine)) {
     if (position.x !== currentX) {
-      throw new Error(
-        `Current position must be at x === ${currentX}, not ${position}`
-      );
+      throw new Error(`Current position must be at x === ${currentX}, not ${position}`);
     }
 
     position = await move(mine, position);
@@ -61,5 +60,5 @@ const log = (logFile, position) => {
 };
 
 export default {
-  run
+  run,
 };

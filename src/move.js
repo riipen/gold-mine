@@ -1,7 +1,7 @@
 import { isFirstMove, getFirstPosition, getNextPosition } from "./helper.js";
 
 let firstMove = true;
-let lastMove = '';
+let lastMove = "";
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
