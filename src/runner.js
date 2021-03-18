@@ -37,33 +37,57 @@ const run = async (mine, logFile, yStart = 0) => {
   let position = new Position(0, 0);
   let maxIndex = 0;
   let paths = Array();
-  
 
 
   for (var i = 0; i < mine.length; i++) {
     let currentX = 0;
     position = new Position(0, i);
-    let score = mine[position.y][position.x];
+    let score = 0;
     let path = Array();
     path.push(position);
+    let invalidFlag = false;
+    let whileLoopCounter = 0;
     
     while (position.x < mine[0].length - 1 && position.isValid(mine)) {
+
       if (position.x !== currentX) {
         throw new Error(
           `Current position must be at x === ${currentX}, not ${position}`
         );
       }
-  
-      position = await move(mine, position);
-      currentX++;
-      path.push(position);
-  
-  
-      if (!position.isValid(mine) || mine[position.y][position.x] === 0) {
+
+      if (whileLoopCounter > mine[0].length) {
         break;
       }
+      
+      var moveObject = await move(mine, position, path, invalidFlag);
+      position = moveObject.position;
+      invalidFlag = moveObject.invalidFlag;
+      path.push(position);
+      
+      currentX = path.length - 1;
+      
+      if (!position.isValid(mine) || mine[position.y][position.x] === 0) {
+
+        var moveObject = await move(mine, position, path, invalidFlag);
+        position = moveObject.position;
+        invalidFlag = moveObject.invalidFlag;
+
+        if (invalidFlag) {
+          break;
+        }
+        else {
+          path.push(position);
+          currentX = path.length - 1;
+        }
+        
+      }
+      whileLoopCounter++;
   
-      score += mine[position.y][position.x];
+    }
+
+    for (var j = 0; j < path.length; j++) {
+      score += mine[path[j].y][path[j].x];
     }
 
     if (score > finalScore) {
@@ -71,7 +95,6 @@ const run = async (mine, logFile, yStart = 0) => {
     }
     finalScore = Math.max(score, finalScore);
     paths.push(path);
-    
   }
 
   for (var i = 0; i < paths[maxIndex].length; i++) {

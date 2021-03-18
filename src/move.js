@@ -1,7 +1,8 @@
 import Position from "./position.js";
 
-//let movedRight;
 let currDirection;
+let prevDirection;
+let secondaryPrevDirection;
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -17,19 +18,16 @@ let currDirection;
  *
  * @return {Position} The new position of the miner.
  */
-const move = (mine, position) => {
+const move = (mine, position, path, invalidFlag) => {
   // Greedy Algorithm
-  
-
-  const newX = (position && position.x + 1) || 0;
+  let newX = (position && position.x + 1) || 0;
   let moveOps = Array(-1,0,1);
 
   let newY;
 
-
-  if (position) {
-    let currY = position.y;
-    let currMax = 0;
+  let currY = position.y;
+  let currMax = 0;
+  if (!invalidFlag) {
     for (var i = 0; i < moveOps.length; i++) {
 
       if (moveOps[i] === currDirection) {
@@ -44,9 +42,112 @@ const move = (mine, position) => {
           }
         }
       }
-
+  
     }
 
+    if (currMax === 0) {
+      invalidFlag = true;
+    }
+
+  }
+  else {
+    if (newX === 1) {
+      invalidFlag = true;
+    }
+    else if (newX === 2) {
+      let currPosition = path.pop();
+      let altMax = 0;
+      newX = currPosition.x;
+      currY = path[path.length-1].y;
+      for (var i = 0; i < moveOps.length; i++) {
+
+        if (moveOps[i] === currDirection) {
+          continue;
+        }
+        else {
+          let tmpPosition = new Position(newX, currY + moveOps[i]);
+          if (tmpPosition.isValid(mine)) {
+            if (mine[currY + moveOps[i]][newX] > altMax) {
+              altMax = mine[currY + moveOps[i]][newX];
+              newY = currY + moveOps[i];
+            }
+          }
+        }
+    
+      }
+
+      if (altMax === 0) {
+        invalidFlag = true;
+      }
+      else {
+        invalidFlag = false;
+      }
+
+    }
+    else if (newX === 3) {
+      let currPosition = path.pop();
+      prevDirection = path[path.length-1].y - path[path.length - 2].y;
+      let altMax = 0;
+      newX = currPosition.x;
+      currY = path[path.length-1].y;
+
+      for (var i = 0; i < moveOps.length; i++) {
+        if (moveOps[i] === currDirection || moveOps[i] === prevDirection) {
+          continue;
+        }
+        else {
+          let tmpPosition = new Position(newX, currY + moveOps[i]);
+          if (tmpPosition.isValid(mine)) {
+            if (mine[currY + moveOps[i]][newX] > altMax) {
+              altMax = mine[currY + moveOps[i]][newX];
+              newY = currY + moveOps[i];
+            }
+          }
+        }
+      }
+
+      if (altMax === 0) {
+        invalidFlag = true;
+      }
+      else {
+        invalidFlag = false;
+      }
+
+    }
+    else {
+      let currPosition = path.pop();
+      prevDirection = path[path.length-1].y - path[path.length - 2].y;
+      let prevPosition = path.pop();
+      secondaryPrevDirection = path[path.length-1].y - path[path.length - 2].y;
+      let altMax = 0;
+      newX = prevPosition.x;
+      currY = path[path.length-1].y;
+
+      for (var i = 0; i < moveOps.length; i++) {
+        if (moveOps[i] === secondaryPrevDirection || moveOps[i] === prevDirection) {
+          continue;
+        }
+        else {
+          let tmpPosition = new Position(newX, currY + moveOps[i]);
+          if (tmpPosition.isValid(mine)) {
+            if (mine[currY + moveOps[i]][newX] > altMax) {
+              altMax = mine[currY + moveOps[i]][newX];
+              newY = currY + moveOps[i];
+            }
+          }
+        }
+      }
+
+      if (altMax === 0) {
+        invalidFlag = true;
+      }
+      else {
+        invalidFlag = false;
+      }
+    }
+  }
+
+  if (!invalidFlag) {
     if (typeof newY === 'undefined') {
       for (var i = 0; i < moveOps.length; i++) {
         if (moveOps[i] === currDirection) {
@@ -57,21 +158,80 @@ const move = (mine, position) => {
         }
       }
       currDirection = newY - currY;
-      return new Position(newX, newY);
-      
+      var newPos = new Position(newX, newY);
+      return  {'position': newPos, 'invalidFlag': false};
     }
     else {
       currDirection = newY - currY;
-      return new Position(newX, newY);
+      var newPos = new Position(newX, newY);
+      return  {'position': newPos, 'invalidFlag': false};
     }
-    
-    
-    
   }
   else {
-    newY = 0;
-    return new Position(newX, newY);
+    if (newX === 2) {
+      if (typeof newY === 'undefined') {
+        for (var i = 0; i < moveOps.length; i++) {
+          if (moveOps[i] === currDirection) {
+            continue;
+          }
+          if (currY + moveOps[i] >= 0 && currY + moveOps[i] < mine.length) {
+            newY = currY + moveOps[i];
+          }
+        }
+        currDirection = newY - currY;
+        var newPos = new Position(newX, newY);
+        return  {'position': newPos, 'invalidFlag': true};
+      }
+      else {
+        currDirection = newY - currY;
+        var newPos = new Position(newX, newY);
+        return  {'position': newPos, 'invalidFlag': true};
+      }
+    }
+
+    else if (newX === 3) {
+      if (typeof newY === 'undefined') {
+        for (var i = 0; i < moveOps.length; i++) {
+          if (moveOps[i] === currDirection && moveOps[i] === prevDirection) {
+            continue;
+          }
+          if (currY + moveOps[i] >= 0 && currY + moveOps[i] < mine.length) {
+            newY = currY + moveOps[i];
+          }
+        }
+        currDirection = newY - currY;
+        var newPos = new Position(newX, newY);
+        return  {'position': newPos, 'invalidFlag': true};
+      }
+      else {
+        currDirection = newY - currY;
+        var newPos = new Position(newX, newY);
+        return  {'position': newPos, 'invalidFlag': true};
+      }
+    }
+    else {
+      if (typeof newY === 'undefined') {
+        for (var i = 0; i < moveOps.length; i++) {
+          if (moveOps[i] === prevDirection && moveOps[i] === secondaryPrevDirection) {
+            continue;
+          }
+          if (currY + moveOps[i] >= 0 && currY + moveOps[i] < mine.length) {
+            newY = currY + moveOps[i];
+          }
+        }
+        currDirection = newY - currY;
+        var newPos = new Position(newX, newY);
+        return  {'position': newPos, 'invalidFlag': true};
+      }
+      else {
+        currDirection = newY - currY;
+        var newPos = new Position(newX, newY);
+        return  {'position': newPos, 'invalidFlag': true};
+      }
+    }
+    
   }
+  
 
 
 };
