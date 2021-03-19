@@ -37,7 +37,6 @@ const run = async (mine, logFile, yStart = 0) => {
   let position = new Position(0, 0);
   let maxIndex = 0;
   let paths = Array();
-  let mineTracking = Array.from(Array(mine.length), _ => Array(mine[0].length).fill(0));
 
 
   for (var i = 0; i < mine.length; i++) {
@@ -46,7 +45,9 @@ const run = async (mine, logFile, yStart = 0) => {
     let score = 0;
     let path = Array();
     path.push(position);
-
+    let invalidFlag = false;
+    let whileLoopCounter = 0;
+    
     while (position.x < mine[0].length - 1 && position.isValid(mine)) {
 
       if (position.x !== currentX) {
@@ -54,15 +55,34 @@ const run = async (mine, logFile, yStart = 0) => {
           `Current position must be at x === ${currentX}, not ${position}`
         );
       }
+
+      if (whileLoopCounter > mine[0].length) {
+        break;
+      }
       
-      position = await move(mine, position, mineTracking);
+      var moveObject = await move(mine, position, path, invalidFlag);
+      position = moveObject.position;
+      invalidFlag = moveObject.invalidFlag;
       path.push(position);
       
       currentX = path.length - 1;
       
       if (!position.isValid(mine) || mine[position.y][position.x] === 0) {
-        break;
+
+        var moveObject = await move(mine, position, path, invalidFlag);
+        position = moveObject.position;
+        invalidFlag = moveObject.invalidFlag;
+
+        if (invalidFlag) {
+          break;
+        }
+        else {
+          path.push(position);
+          currentX = path.length - 1;
+        }
+        
       }
+      whileLoopCounter++;
   
     }
 
