@@ -266,6 +266,16 @@ const move = (mine, position, path, invalidFlag) => {
   }
   
 
+  /* I'm thinking of a way to store the valid path directions (dupilcate removed)
+   * in an auxiliary matrix with the same size of mine matrix. Each element of the
+   * matrix will store the possible "from" position. So we know which path could
+   * lead the miner reach the last column. We can then choose the largest path from
+   * the last column. However, I didn't make it work and stuck at the recurrsion part.
+   * There are some async problems. I don't want to waste too much time on the best solution.
+   * So I choose this solution as deliverable. It is an interesting problem, so I would
+   * like to continue working on the best solution.
+   */
+
 
 };
 
