@@ -1,24 +1,7 @@
 import fs from "fs";
 
 import move from "./move.js";
-import validator from "./validator.js";
 import Position from "./position.js";
-
-const LOG_DIR = "logs";
-/**
- * Given a file name, deletes any existing file and creates a new blank one.
- *
- * @param  {string} logFile - The name of the file to delete and re-create.
- *
- * @return {undefined}
- */
-const resetLogFile = logFile => {
-  if (!fs.existsSync(LOG_DIR)) {
-    fs.mkdirSync(LOG_DIR);
-  }
-
-  fs.writeFileSync(logFile, "");
-};
 
 /**
  * Given a mine, runs the miner through the mine collecting gold along the way.
@@ -33,13 +16,17 @@ const run = async (mine, logFile, yStart = 0) => {
   if (!mine) throw new Error("a mine is required");
   if (!logFile) throw new Error("a logFile is required");
 
+  // Initialize position and final results
   let finalScore = 0;
   let position = new Position(0, 0);
   let maxIndex = 0;
   let paths = Array();
 
-
+  // Start from the first column and run the greedy algorithm
+  // on each starting point
   for (var i = 0; i < mine.length; i++) {
+
+    // Initialize the starting position and local path
     let currentX = 0;
     position = new Position(0, i);
     let score = 0;
@@ -48,6 +35,8 @@ const run = async (mine, logFile, yStart = 0) => {
     let invalidFlag = false;
     let whileLoopCounter = 0;
     
+
+    // From each starting point on the first column, run the greedy step
     while (position.x < mine[0].length - 1 && position.isValid(mine)) {
 
       if (position.x !== currentX) {
@@ -56,10 +45,12 @@ const run = async (mine, logFile, yStart = 0) => {
         );
       }
 
+      // If number of the steps is more than the size of mine, then there is a dead end.
       if (whileLoopCounter > mine[0].length) {
         break;
       }
       
+      // Greedy Step heuristic and verify if the step is valid.
       var moveObject = await move(mine, position, path, invalidFlag);
       position = moveObject.position;
       invalidFlag = moveObject.invalidFlag;
@@ -67,12 +58,15 @@ const run = async (mine, logFile, yStart = 0) => {
       
       currentX = path.length - 1;
       
+      // If heuristic met a dead end, undo the step to choose another direction until
+      // we found a nother valid position.
       if (!position.isValid(mine) || mine[position.y][position.x] === 0) {
 
         var moveObject = await move(mine, position, path, invalidFlag);
         position = moveObject.position;
         invalidFlag = moveObject.invalidFlag;
 
+        // If still not valid, we just stop.
         if (invalidFlag) {
           break;
         }
@@ -86,10 +80,12 @@ const run = async (mine, logFile, yStart = 0) => {
   
     }
 
+    // Calculate the score after we get one full path from one starting point
     for (var j = 0; j < path.length; j++) {
       score += mine[path[j].y][path[j].x];
     }
 
+    // Update the max score and max path
     if (score > finalScore) {
       maxIndex = i;
     }
@@ -97,6 +93,8 @@ const run = async (mine, logFile, yStart = 0) => {
     paths.push(path);
   }
 
+
+  // Log the max path for validation
   for (var i = 0; i < paths[maxIndex].length; i++) {
     log(logFile, paths[maxIndex][i]);
   }
