@@ -19,6 +19,7 @@ const move = (mine, position, traceMoves, path, mineTracking) => {
   let newX = (position && position.x + 1) || 0;
   let currMax = 0;
 
+  // Keep track of all possible new positions and new values
   let rightVal;
   let rightUpVal;
   let rightDownVal;
@@ -27,6 +28,7 @@ const move = (mine, position, traceMoves, path, mineTracking) => {
   let rightDownPos = new Position(newX, position.y + 1);
   let stepOps = traceMoves[traceMoves.length-1];
 
+  // Get the maximum move based on DP table not the original mine
   if (rightPos.isValid(mine) && stepOps.rightFlag) {
     rightVal = mineTracking[rightPos.y][rightPos.x];
     currMax = Math.max(rightVal, currMax);
@@ -40,6 +42,8 @@ const move = (mine, position, traceMoves, path, mineTracking) => {
     currMax = Math.max(rightDownVal, currMax);
   }
 
+  // If we can get the maximum from current move, then return
+  // the new(max) position immediately
   if (currMax === rightVal) {
     return rightPos;
   }
@@ -50,6 +54,9 @@ const move = (mine, position, traceMoves, path, mineTracking) => {
     return rightUpPos;
   }
   else {
+    // If we can't get the maximum from the current move then we need to undo certain number of moves
+    // If we are just on the first column
+    // Just choose one of the valid move.
     if (path.length === 1) {
       if (stepOps.rightDownFlag && newX < mine[0].length && rightDownPos.y < mine.length && rightDownPos.y >= 0) {
         return rightDownPos;
@@ -62,6 +69,7 @@ const move = (mine, position, traceMoves, path, mineTracking) => {
       }
     }
     else if (path.length >= 2) {
+      // If we are not on the first column, then we can undo more moves.
       let alternativePos = undoSteps(mine, path, traceMoves, mineTracking);
       return alternativePos;
     }
@@ -72,6 +80,12 @@ const move = (mine, position, traceMoves, path, mineTracking) => {
 
 };
 
+
+// Any mining path that can get through the last column
+// can be the candidate of the maximum path.
+// So if we hit the invalid position before
+// the last column we can try to undo the current move, 
+// and try the alternative direction.
 const undoSteps = (mine, path, traceMoves, mineTracking) => {
   let currPos;
   let currOps;
@@ -79,6 +93,10 @@ const undoSteps = (mine, path, traceMoves, mineTracking) => {
   let traceBackOps;
   let undoCount = 0;
 
+  // We always trace back until the original starting point
+  // But actually we need to make undoCount to a minimal number
+  // Because what we have already been through are mostly greedy
+  // moves.
   while (path.length > 1) {
     if (undoCount === 1) {
       break;
@@ -90,6 +108,9 @@ const undoSteps = (mine, path, traceMoves, mineTracking) => {
     undoCount++;
   }  
   
+  // We know the current position will and moves will
+  // lead us to the dead end (invalid position on all direcitons)
+  // So we can't go to these position again.
   if ((currPos.y - traceBackPos.y) === 0) {
     traceBackOps.rightFlag = false;
   }
@@ -100,6 +121,7 @@ const undoSteps = (mine, path, traceMoves, mineTracking) => {
     traceBackOps.rightUpFlag = false;
   }
 
+  // Start the alternative move.
   let alternateRightVal;
   let alternateRightUpVal;
   let alternateRightDownVal;
@@ -107,6 +129,7 @@ const undoSteps = (mine, path, traceMoves, mineTracking) => {
   let alternateRightUpPos = new Position(currPos.x, traceBackPos.y - 1);
   let alternateRightDownPos = new Position(currPos.x, traceBackPos.y + 1);
 
+  // Choose the one of the valid move.
   if (alternateRightPos.isValid(mine) && traceBackOps.rightFlag) {
     alternateRightVal = mineTracking[alternateRightPos.y][alternateRightPos.x];
   }
