@@ -22,7 +22,18 @@ const run = async (mine, logFile, yStart = 0) => {
   let paths = new Array();
 
   const mineTracking = Array.from(Array(mine.length), _ => Array(mine[0].length).fill(0));
-  
+
+  let column_weights = new Array();
+
+  for (var j = 0; j < mine[0].length; j++) {
+    let zeroCounter = 0;
+    for (var i = 0; i < mine.length; i++) {
+      if (mine[i][j] != 0) {
+        zeroCounter++;
+      }
+    }
+    column_weights.push(zeroCounter);
+  }
 
   for (var j = mine[0].length -1; j > -1; j--) {
     for (var i = 0; i < mine.length; i++) {
@@ -31,11 +42,11 @@ const run = async (mine, logFile, yStart = 0) => {
       let rightUpValue = 0;
       let rightDownValue = 0;
 
-      if (j != mine[0].length - 1) rightValue = mineTracking[i][j + 1];
+      if (j != mine[0].length - 1) rightValue = mineTracking[i][j + 1] * (column_weights[j]/mine[0].length);
 
-      if (i != 0 && j != mine[0].length-1) rightUpValue = mineTracking[i - 1][j + 1];
+      if (i != 0 && j != mine[0].length-1) rightUpValue = mineTracking[i - 1][j + 1] * (column_weights[j]/mine[0].length);
 
-      if (i != mine.length-1 && j != mine[0].length-1) rightDownValue = mineTracking[i + 1][j + 1];
+      if (i != mine.length-1 && j != mine[0].length-1) rightDownValue = mineTracking[i + 1][j + 1] * (column_weights[j]/mine[0].length);
 
       mineTracking[i][j] = mine[i][j] + Math.max(rightValue, rightUpValue, rightDownValue);
     }

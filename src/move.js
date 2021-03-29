@@ -80,7 +80,7 @@ const undoSteps = (mine, path, traceMoves, mineTracking) => {
   let undoCount = 0;
 
   while (path.length > 1) {
-    if (undoCount === 2) {
+    if (undoCount === 1) {
       break;
     }
     currPos = path.pop();
