@@ -28,6 +28,8 @@ const run = async (mine, logFile, yStart = 0) => {
       let rightUpValue = 0;
       let rightDownValue = 0;
 
+      if (mine[i][j] === 0) continue;
+
       if (j != mine[0].length - 1) rightValue = mineTracking[i][j + 1];
 
       if (i != 0 && j != mine[0].length-1) rightUpValue = mineTracking[i - 1][j + 1];
@@ -60,14 +62,16 @@ const run = async (mine, logFile, yStart = 0) => {
       );
     }
 
-    position = await move(mine, position);
+    position = await move(mine, position, mineTracking);
     currentX++;
-    log(logFile, position);
+    
 
 
     if (!position.isValid(mine) || mine[position.y][position.x] === 0) {
       break;
     }
+
+    log(logFile, position);
 
     score += mine[position.y][position.x];
   }

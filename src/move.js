@@ -17,12 +17,12 @@ let currDirection;
  *
  * @return {Position} The new position of the miner.
  */
-const move = (mine, position) => {
+const move = (mine, position, mineTracking) => {
   // Dynamic Programming
   
 
   const newX = (position && position.x + 1) || 0;
-  let moveOps = Array(-1,0,1);
+  let moveOps = Array(0, -1, 1);
 
   let newY;
 
@@ -37,9 +37,9 @@ const move = (mine, position) => {
       }
       else {
         let tmpPosition = new Position(newX, currY + moveOps[i]);
-        if (tmpPosition.isValid(mine)) {
-          if (mine[currY + moveOps[i]][newX] > currMax) {
-            currMax = mine[currY + moveOps[i]][newX];
+        if (tmpPosition.isValid(mineTracking)) {
+          if (mineTracking[currY + moveOps[i]][newX] > currMax) {
+            currMax = mineTracking[currY + moveOps[i]][newX];
             newY = currY + moveOps[i];
           }
         }
@@ -52,7 +52,7 @@ const move = (mine, position) => {
         if (moveOps[i] === currDirection) {
           continue;
         }
-        if (currY + moveOps[i] >= 0 && currY + moveOps[i] < mine.length) {
+        if (currY + moveOps[i] >= 0 && currY + moveOps[i] < mineTracking.length) {
           newY = currY + moveOps[i];
         }
       }
