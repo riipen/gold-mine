@@ -45,11 +45,11 @@ If you can score in the top 10 of all time submissions, your name will be added 
 $ curl -o- https://raw.githubusercontent.com/creationix/nvm/${VERSION}/install.sh | bash
 ```
 
-2. Install `node 10.16.3` (currently latest LTS):
+2. Install `node 10.16.3`:
 
 ```bash
-nvm install --lts
-nvm use --lts
+nvm install 10.16.3
+nvm use 10.16.3
 ```
 
 4. Upgrade npm and install local dependencies:
