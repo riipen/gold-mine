@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import move from "./move.js";
+import move from "./moveMiner.js";
 
 /**
  * Given a mine, runs the miner through the mine collecting gold along the way.
@@ -61,5 +61,5 @@ const log = (logFile, position) => {
 };
 
 export default {
-  run
+  run,
 };
