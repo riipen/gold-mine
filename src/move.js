@@ -33,6 +33,31 @@ let mine_cache;
   return new Position(newX, newY);
 };
 
+/**
+ * Given the input mine, create a corresponding object containing path info
+ * and potential gold attainable for each starting position.
+ *
+ * @param {*} mine A n x m multidimensional array respresenting the mine.
+ *
+ * @returns An object whose keys are the columns and whose values are themselves
+ *   objects whose keys are the rows and values are a `Node` object for the
+ *   given row and column. I.e. the object is of the form:
+ *
+ *   {
+ *     0: {
+ *       0: Node_0_0,
+ *       1: Node_0_1,
+ *       ( . . . )
+ *     },
+ *     1: {
+ *       0: Node_1_0,
+ *       1: Node_1_1,
+ *       ( . . . )
+ *     },
+ *     ( . . .)
+ *   }
+ *
+ */
 function get_optimal_route(mine) {
   const max_cols = mine[0].length - 1;
   const max_row = mine.length - 1;
