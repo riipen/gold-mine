@@ -1,15 +1,19 @@
 export class Node {
   constructor(
     value,
-    richest_subsequent_node,
-    second_richest_subsequent_node,
-    potential_value,
-    next_direction
+    best_direction,
+    best_path,
+    best_potential_value,
+    alt_direction,
+    alt_path,
+    alt_potential_value
   ) {
     this.value = value,
-    this.richest_subsequent_node = richest_subsequent_node,
-    this.second_richest_subsequent_node = second_richest_subsequent_node,
-    this.potential_value = potential_value,
-    this.next_direction = next_direction
+    this.best_direction = best_direction,
+    this.best_path = best_path,
+    this.best_potential_value = best_potential_value,
+    this.alt_direction = alt_direction,
+    this.alt_path = alt_path,
+    this.alt_potential_value = alt_potential_value
   };
 };
