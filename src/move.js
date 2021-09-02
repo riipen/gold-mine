@@ -153,8 +153,8 @@ function get_optimal_route(mine) {
  */
 function sort_nodes(possible_nodes) {
   return possible_nodes.sort(
-    function(node_a, node_a) {
-      return b.node.potential_value - a.node.potential_value
+    function(node_a, node_b) {
+      return node_b.node.potential_value - node_a.node.potential_value
     }
   );
 }
