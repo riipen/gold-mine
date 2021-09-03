@@ -1,4 +1,4 @@
-export class Node {
+class Node {
   constructor(
     best_direction,
     best_path,
@@ -15,3 +15,5 @@ export class Node {
     this.alt_potential_value = alt_potential_value
   };
 };
+
+module.exports = { Node };
