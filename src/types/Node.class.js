@@ -1,6 +1,5 @@
 export class Node {
   constructor(
-    value,
     best_direction,
     best_path,
     best_potential_value,
@@ -8,7 +7,6 @@ export class Node {
     alt_path,
     alt_potential_value
   ) {
-    this.value = value,
     this.best_direction = best_direction,
     this.best_path = best_path,
     this.best_potential_value = best_potential_value,

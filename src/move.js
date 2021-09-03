@@ -75,7 +75,6 @@ function create_mine_guide(mine) {
       // meaningless, since the exploration will end here.
       if (col == max_cols || value == 0) {
         cache[col][row] = new Node(
-          value,
           null,
           [],
           value,
@@ -196,7 +195,6 @@ function create_mine_guide(mine) {
         );
 
         cache[col][row] = new Node(
-          value,
           best_direction,
           best_path,
           potential_value,
@@ -205,9 +203,14 @@ function create_mine_guide(mine) {
           alt_potential_value
         );
 
-        // To avoid stack overflow, need to clean as we go. Before moving on to
-        // the previous column (since we are moving backwards), we can delete
-        // the entire object for the following column, since it won't be used.
+        /**
+         * Since each node in a column will be storing two arrays of length
+         * (max_col - col), this can quickly cause slowdown and eventually,
+         * stack overflow. To prevent this, we will sweep behind us as we go,
+         * since, once a given cache position has been filled, we no longer
+         * require the node to its immediate down right (as we are moving
+         * backwards through the columns and up through the rows).
+         */
         if (row < max_row) {
           cache[col + 1][row + 1] = null;
         }
