@@ -36,7 +36,7 @@ consider the mine from above:
 ```
 
 As mentioned, the best path for the central cell is **diagonally up** to `9` and the second best path is **right** to `5`.
-Moving on to the first column, when applying this algorithm for the southwest cell (first row, third column), we can clearly see that, of the two available options
+Moving on to the first column, when applying this algorithm for the southwest cell (third row, first column), we can clearly see that, of the two available options
 (**diagonally up** to `9` and **right** to `0`), moving **diagonally up** is the only path that makes sense, since the other would end our mining expedition.
 
 Unfortunately, the next best path after this is also a movement **diagonally up** (from `9` to `9`), so we cannot take this "happiest path". Instead, we simply 
