@@ -19,11 +19,17 @@ let movedRight;
 const move = (mine, position) => {
   // TODO: write logic for miner. The current approach naive approach is to simply:
   //   1. Start at (0,0)
-  //   2. Always moves right
+  //   2. Always moves\ right
 
   const newX = (position && position.x + 1) || 0;
 
   let newY;
+
+  // So, to begin -
+  // The default move setup is that it will:
+  //    1) increment x by 1, y by 1, 
+  //    2) increment x by 1, y by 0
+  //    3) repeat, until miner lands on 0 or is out of bounds
 
   if (!movedRight) {
     newY = (position && position.y) || 0;

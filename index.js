@@ -30,6 +30,9 @@ const resetLogFile = logFile => {
  *
  * @return {number} The score achieved in the mine.
  */
+
+
+// Running an individual mine
 const runMine = async (mine, name) => {
   const logFile = path.join(__dirname, LOG_DIR, `${name}.txt`);
 
@@ -47,6 +50,8 @@ const runMine = async (mine, name) => {
   return 0;
 };
 
+
+// Main driver for the program (will run all mines)
 const main = async () => {
   console.log("Riipen Gold Miner");
 

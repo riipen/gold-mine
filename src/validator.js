@@ -19,9 +19,16 @@ const DIRECTIONS = {
  *
  * @return {Boolean} Whether the moves made and final score are valid.
  */
+
+
+// So, yeah, this is going to determine whether our process is valid
+// And it tells the developer "No cheating!" if not valid...
 const validate = async (mine, logFile, mineScore) => {
-  if (!mine) throw new Error('a mine is required')
-  if (!logFile) throw new Error('a logFile is required')
+
+  if (!mine) 
+    throw new Error('a mine is required')
+  if (!logFile) 
+    throw new Error('a logFile is required')
 
   const lineReader = readline.createInterface({
     input: fs.createReadStream(logFile)
@@ -51,11 +58,15 @@ const validate = async (mine, logFile, mineScore) => {
       ];
 
       // You must only move +1, 0 or -1 vertically in any given move
-      if (!validY.includes(step[1])) valid = false
+      if (!validY.includes(step[1])) 
+        valid = false
 
       // You can't go out of bounds
-      if (step[0] > mine[0].length -1) valid = false;
-      if (step[1] > mine.length -1) valid = false;
+      if (step[0] > mine[0].length -1) 
+        valid = false;
+
+      if (step[1] > mine.length -1) 
+        valid = false;
 
       if (step[1] === position.y + 1) {
         currentDirection = DIRECTIONS.UP;
@@ -67,10 +78,12 @@ const validate = async (mine, logFile, mineScore) => {
     }
 
     // You cannot repeat the same movement direction twice in a row
-    if (previousDirection && currentDirection && previousDirection === currentDirection) valid = false;
+    if (previousDirection && currentDirection && previousDirection === currentDirection) 
+      valid = false;
 
     // Breaks out of file reading
-    if (!valid) lineReader.close();
+    if (!valid) 
+      lineReader.close();
 
     score += mine[step[1]][step[0]]
 
