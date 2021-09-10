@@ -51,7 +51,7 @@ const runMine = async (mine, name) => {
 };
 
 
-// Main driver for the program (will run all mines)
+// Main driver for the program (runs the mines)
 const main = async () => {
   console.log("Riipen Gold Miner");
 

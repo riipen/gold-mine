@@ -1,6 +1,27 @@
 import Position from "./position.js";
 
-let movedRight;
+// let movedRight;
+
+let topRightValue;
+let straightRightValue;
+let bottomRightValue;
+
+let topRightString;
+let straightRightString;
+let bottomRightString;
+
+let topRightCoordinateArray;
+let straightRightCoordinateArray;
+let bottomRightCoordinateArray;
+
+let topRightY;
+let straightRightY;
+let bottomRightY;
+
+let bestGoldMove;
+let secondToBestGoldMove;
+let currentPosition;
+let previousPosition;
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -17,30 +38,144 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves\ right
 
+  // X-coordinate will always be incremented by one, for each step
   const newX = (position && position.x + 1) || 0;
 
   let newY;
 
-  // So, to begin -
-  // The default move setup is that it will:
-  //    1) increment x by 1, y by 1, 
-  //    2) increment x by 1, y by 0
-  //    3) repeat, until miner lands on 0 or is out of bounds
+  // Important rule
+  //    -  the miner cannot repeat the previous move (so you can only optimize for two remaining
+  //       move positions for each given move)
 
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
+  // Very important to reiterate this
+  //   -   since the position will be undefined on the first move... there's not a lot you can
+  //       therefore do with it
 
-    movedRight = true;
-  } else {
+  // NOTE: we can only go straight-right or bottom-right for this [first] position
+  //       but how do we decide upon the value to chose if we can't get the value from
+  //       the object..? hmm...
+
+  // TODO: optimize route from the first position
+  // TODO: debug for both luna and mars runs
+  
+  if (position === undefined) {
+
     newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
   }
 
+  if (position != undefined) {
+
+    topRightY = (position && position.y - 1) || 0;
+    topRightString = new Position(newX, topRightY).toString();
+    topRightCoordinateArray = topRightString.match(/\d+/g).map(str => parseInt(str));
+    console.log(topRightCoordinateArray);
+
+    straightRightY = (position && position.y) || 0;
+    straightRightString = new Position(newX, straightRightY).toString();
+    straightRightCoordinateArray = straightRightString.match(/\d+/g).map(str => parseInt(str));
+    console.log(straightRightCoordinateArray);
+
+    bottomRightY = (position && position.y + 1) || 0;
+    bottomRightString = new Position(newX, bottomRightY).toString();
+    bottomRightCoordinateArray = bottomRightString.match(/\d+/g).map(str => parseInt(str));
+    console.log(bottomRightCoordinateArray);
+
+    // We can't access properties of an undefined object, so we need to account for that`
+    if (position.x == 0) {
+      topRightValue = undefined;
+    } else {
+      topRightValue = mine[topRightCoordinateArray[0]][topRightCoordinateArray[1]];
+    }
+
+    straightRightValue = mine[straightRightCoordinateArray[0]][straightRightCoordinateArray[1]];
+
+    if (position.x == mine[0].length - 1) {
+      bottomRightValue = undefined;
+    } else { 
+      bottomRightValue = mine[bottomRightCoordinateArray[0]][bottomRightCoordinateArray[1]];
+    }
+
+    console.log("Top right: " + topRightValue);
+    console.log("Straight right: " + straightRightValue);
+    console.log("Bottom right: " + bottomRightValue);
+
+    console.log();
+
+    // NOTE: Strictly for the undefined case for top-right value
+    if (topRightValue === undefined) {
+
+      if (straightRightValue > bottomRightValue) {
+        bestGoldMove =  (position && position.y) || 0;
+      } else {
+        bestGoldMove = (position && position.y + 1) || 0;
+      }
+    }
+
+    if ( (topRightValue > straightRightValue) && (topRightValue > bottomRightValue ) ) {
+      currentPosition = "topRight";
+      bestGoldMove = (position && position.y - 1) || 0;
+
+      if (straightRightValue > bottomRightValue) {
+        secondToBestGoldMove =  (position && position.y) || 0;
+      } else {
+        secondToBestGoldMove = (position && position.y + 1) || 0;
+      }
+    }
+
+    if ( (straightRightValue > topRightValue ) && (straightRightValue > bottomRightValue) ) {
+      currentPosition = "straightRight";
+      bestGoldMove = (position && position.y) || 0;
+
+      if (topRightValue > bottomRightValue) {
+        secondToBestGoldMove = (position && position.y - 1) || 0;
+      } else {
+        secondToBestGoldMove = (position && position.y + 1) || 0;
+      }
+    }
+
+    // NOTE: Strictly for the undefined case for bottom-right value
+    if (bottomRightValue === undefined) {
+
+      if (topRightValue > straightRightValue) {
+        bestGoldMove = (position && position.y - 1) || 0;
+      } else {
+        bestGoldMove = (position && position.y) || 0;
+      }
+    }
+
+    if ( (bottomRightValue > topRightValue) && (bottomRightValue > straightRightValue) ) {
+      currentPosition = "bottomRight";
+      bestGoldMove = (position && position.y + 1) || 0;
+
+      if (topRightValue > straightRightValue) {
+        secondToBestGoldMove = (position && position.y - 1) || 0;
+      } else {
+        secondToBestGoldMove = (position && position.y) || 0;
+      }
+    }
+
+    console.log("\nCURRENT POSITION (after move): " + currentPosition);
+
+    // Checking the positions to prevent repeats
+
+    if ( (topRightValue != undefined) && (bottomRightValue != undefined) ) {
+
+      if (currentPosition != previousPosition) {
+        newY = bestGoldMove
+      } else {
+        newY = secondToBestGoldMove;
+      }  
+      
+    } else {
+      newY = bestGoldMove;
+    }
+ 
+    // Setting a previous position
+    previousPosition = currentPosition;
+  }
+
+  console.log("CURRENT COORDINATES: " + new Position(newX, newY).toString() + "\n");
   return new Position(newX, newY);
 };
 

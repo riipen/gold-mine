@@ -47,7 +47,7 @@ const run = async (mine, logFile, yStart = 0) => {
 
     score += mine[position.y][position.x];
 
-    // console.log(score); // checking the increments
+    console.log(score); // checking the increments
   }
 
   return score;

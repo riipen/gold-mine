@@ -45,11 +45,15 @@ const validate = async (mine, logFile, mineScore) => {
   for await (const line of lineReader) {
     const step = line.split(',').map((v) => +v);
 
+    console.log("Step: " + step); // Checking the steps
+
     if (!position) {
       position = new Position(step[0], step[1]);
     } else {
+      
       // You must always move forward
-      if (step[0] !== position.x + 1) valid = false;
+      if (step[0] !== position.x + 1) 
+        valid = false;
 
       const validY = [
         position.y + 1,
