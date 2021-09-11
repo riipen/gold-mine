@@ -21,6 +21,7 @@ let bottomRightY;
 let bestGoldMove;
 let secondToBestGoldMove;
 let currentPosition;
+let secondCurrentPosition;
 let previousPosition;
 
 /**
@@ -57,7 +58,8 @@ const move = (mine, position) => {
   //       the object..? hmm...
 
   // TODO: optimize route from the first position
-  // TODO: debug for both luna and mars runs (r.w. to the repeat moves)
+  // TODO: still need to account for situations where we have two zeros in a row and the only 
+  //       higher option (n > 0) is, in fact, a repeat move...
 
   if (position === undefined) {
 
@@ -82,8 +84,7 @@ const move = (mine, position) => {
     bottomRightCoordinateArray = bottomRightString.match(/\d+/g).map(str => parseInt(str));
     console.log(bottomRightCoordinateArray);
 
-    // NOTE: Keep this essentially the same! The indices for checking/utilising a mine object
-    //       are the inverse of a given Position() object.
+    // NOTE: Keep this essentially the same! The indices for checking/utilising a mine object are the inverse of a given Position() object.
 
     // We can't access properties of an undefined object, so we need to account for that`
     if (position.y == 0) {
@@ -123,19 +124,23 @@ const move = (mine, position) => {
       bestGoldMove = (position && position.y - 1) || 0;
 
       if (straightRightValue > bottomRightValue) {
+        secondCurrentPosition = "straightRight";
         secondToBestGoldMove =  (position && position.y) || 0;
       } else {
+        secondCurrentPosition = "bottomRight";
         secondToBestGoldMove = (position && position.y + 1) || 0;
       }
     }
 
-    if ( (straightRightValue > topRightValue ) && (straightRightValue > bottomRightValue) ) {
+    if ( (straightRightValue >= topRightValue ) && (straightRightValue >= bottomRightValue) ) {
       currentPosition = "straightRight";
       bestGoldMove = (position && position.y) || 0;
 
       if (topRightValue > bottomRightValue) {
+        secondCurrentPosition = "topRight";
         secondToBestGoldMove = (position && position.y - 1) || 0;
       } else {
+        secondCurrentPosition = "bottomRight"
         secondToBestGoldMove = (position && position.y + 1) || 0;
       }
     }
@@ -152,41 +157,41 @@ const move = (mine, position) => {
       }
     }
 
-    if ( (bottomRightValue > topRightValue) && (bottomRightValue > straightRightValue) ) {
+    if ( (bottomRightValue >= topRightValue) && (bottomRightValue >= straightRightValue) ) {
       currentPosition = "bottomRight";
       bestGoldMove = (position && position.y + 1) || 0;
 
       if (topRightValue > straightRightValue) {
+        secondCurrentPosition = "topRight"
         secondToBestGoldMove = (position && position.y - 1) || 0;
       } else {
+        secondCurrentPosition = "straightRight"
         secondToBestGoldMove = (position && position.y) || 0;
       }
     }
 
-    console.log("\nCurrent position (after move): " + currentPosition);
-
     // Checking the positions to prevent repeats
-    // TODO: DEBUG - it isn't correctly checking previous states
+    // DONE: checking previous statee properly
+    // DONE: at some point, there is a repeat... but why?
 
-    console.log("Current direction is same as previous: " + (currentPosition == previousPosition));
-
-    if ( (topRightValue != undefined) && (bottomRightValue != undefined) ) {
-
-      if (currentPosition != previousPosition) {
-        newY = bestGoldMove;
-      } else {
-        newY = secondToBestGoldMove;
-      }  
-      
-    } else {
-        newY = bestGoldMove; 
-    }
+    if (currentPosition != previousPosition) {
+      newY = bestGoldMove;
+    } 
+    
+    if (currentPosition == previousPosition) {
+      currentPosition = secondCurrentPosition;
+      newY = secondToBestGoldMove;
+    }  
  
     // console.log("Best gold move?: " + bestGoldMove);
     // console.log("Second-to-best gold move?: " + secondToBestGoldMove);
 
+    console.log("Current is same as previous: " + (currentPosition == previousPosition));
+
     // Setting the previous position
     previousPosition = currentPosition;
+
+    console.log("Current position (after move): " + currentPosition);
   }
 
   console.log("Current coordinates: " + new Position(newX, newY).toString() + "\n");
