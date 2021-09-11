@@ -57,8 +57,8 @@ const move = (mine, position) => {
   //       the object..? hmm...
 
   // TODO: optimize route from the first position
-  // TODO: debug for both luna and mars runs
-  
+  // TODO: debug for both luna and mars runs (r.w. to the repeat moves)
+
   if (position === undefined) {
 
     newY = (position && position.y + 1) || 0;
@@ -69,6 +69,7 @@ const move = (mine, position) => {
     topRightY = (position && position.y - 1) || 0;
     topRightString = new Position(newX, topRightY).toString();
     topRightCoordinateArray = topRightString.match(/\d+/g).map(str => parseInt(str));
+    console.log();
     console.log(topRightCoordinateArray);
 
     straightRightY = (position && position.y) || 0;
@@ -81,22 +82,25 @@ const move = (mine, position) => {
     bottomRightCoordinateArray = bottomRightString.match(/\d+/g).map(str => parseInt(str));
     console.log(bottomRightCoordinateArray);
 
+    // NOTE: Keep this essentially the same! The indices for checking/utilising a mine object
+    //       are the inverse of a given Position() object.
+
     // We can't access properties of an undefined object, so we need to account for that`
-    if (position.x == 0) {
+    if (position.y == 0) {
       topRightValue = undefined;
     } else {
-      topRightValue = mine[topRightCoordinateArray[0]][topRightCoordinateArray[1]];
+      topRightValue = mine[topRightCoordinateArray[1]][topRightCoordinateArray[0]];
     }
 
-    straightRightValue = mine[straightRightCoordinateArray[0]][straightRightCoordinateArray[1]];
+    straightRightValue = mine[straightRightCoordinateArray[1]][straightRightCoordinateArray[0]];
 
-    if (position.x == mine[0].length - 1) {
+    if (position.y == mine.length - 1) {
       bottomRightValue = undefined;
     } else { 
-      bottomRightValue = mine[bottomRightCoordinateArray[0]][bottomRightCoordinateArray[1]];
+      bottomRightValue = mine[bottomRightCoordinateArray[1]][bottomRightCoordinateArray[0]];
     }
 
-    console.log("Top right: " + topRightValue);
+    console.log("\nTop right: " + topRightValue);
     console.log("Straight right: " + straightRightValue);
     console.log("Bottom right: " + bottomRightValue);
 
@@ -106,8 +110,10 @@ const move = (mine, position) => {
     if (topRightValue === undefined) {
 
       if (straightRightValue > bottomRightValue) {
+        currentPosition = "straightRight"
         bestGoldMove =  (position && position.y) || 0;
       } else {
+        currentPosition = "bottomRight";
         bestGoldMove = (position && position.y + 1) || 0;
       }
     }
@@ -138,8 +144,10 @@ const move = (mine, position) => {
     if (bottomRightValue === undefined) {
 
       if (topRightValue > straightRightValue) {
+        currentPosition = "topRight";
         bestGoldMove = (position && position.y - 1) || 0;
       } else {
+        currentPosition = "straightRight";
         bestGoldMove = (position && position.y) || 0;
       }
     }
@@ -155,27 +163,33 @@ const move = (mine, position) => {
       }
     }
 
-    console.log("\nCURRENT POSITION (after move): " + currentPosition);
+    console.log("\nCurrent position (after move): " + currentPosition);
 
     // Checking the positions to prevent repeats
+    // TODO: DEBUG - it isn't correctly checking previous states
+
+    console.log("Current direction is same as previous: " + (currentPosition == previousPosition))
 
     if ( (topRightValue != undefined) && (bottomRightValue != undefined) ) {
 
       if (currentPosition != previousPosition) {
-        newY = bestGoldMove
+        newY = bestGoldMove;
       } else {
         newY = secondToBestGoldMove;
       }  
       
     } else {
-      newY = bestGoldMove;
+        newY = bestGoldMove; 
     }
  
-    // Setting a previous position
+    // console.log("Best gold move?: " + bestGoldMove);
+    // console.log("Second-to-best gold move?: " + secondToBestGoldMove);
+
+    // Setting the previous position
     previousPosition = currentPosition;
   }
 
-  console.log("CURRENT COORDINATES: " + new Position(newX, newY).toString() + "\n");
+  console.log("Current coordinates: " + new Position(newX, newY).toString() + "\n");
   return new Position(newX, newY);
 };
 

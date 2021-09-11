@@ -44,7 +44,6 @@ const validate = async (mine, logFile, mineScore) => {
 
   for await (const line of lineReader) {
     const step = line.split(',').map((v) => +v);
-
     console.log("Step: " + step); // Checking the steps
 
     if (!position) {

@@ -30,6 +30,8 @@ const run = async (mine, logFile, yStart = 0) => {
   // log the initial position
   log(logFile, position);
 
+  // Checks validity with the method isValid() in position.js
+  // which is a separate process from anything happening in validator.js
   while (position.x < mine[0].length - 1 && position.isValid(mine)) {
     if (position.x !== currentX) {
       throw new Error(
@@ -39,6 +41,13 @@ const run = async (mine, logFile, yStart = 0) => {
 
     position = await move(mine, position);
     currentX++;
+
+    // Just trying to see what's going on here
+    // console.log("Current position: " + position.toString()); // indices of position
+    // console.log("Current value at actual position: " + mine[position.y][position.x]); // getting actual value
+    // console.log("Position is invalid?: " + !position.isValid(mine)); // check if position is valid
+    // console.log("Position equal to zero?: " + (mine[position.y][position.x] === 0)); // check if value is equal to zero
+    // console.log("Completely invalid?: " + (!position.isValid(mine) || mine[position.y][position.x] === 0)); // check overall validity
 
     log(logFile, position);
 
