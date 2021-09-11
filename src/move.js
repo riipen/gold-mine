@@ -110,7 +110,7 @@ const move = (mine, position) => {
     if (topRightValue === undefined) {
 
       if (straightRightValue > bottomRightValue) {
-        currentPosition = "straightRight"
+        currentPosition = "straightRight";
         bestGoldMove =  (position && position.y) || 0;
       } else {
         currentPosition = "bottomRight";
@@ -168,7 +168,7 @@ const move = (mine, position) => {
     // Checking the positions to prevent repeats
     // TODO: DEBUG - it isn't correctly checking previous states
 
-    console.log("Current direction is same as previous: " + (currentPosition == previousPosition))
+    console.log("Current direction is same as previous: " + (currentPosition == previousPosition));
 
     if ( (topRightValue != undefined) && (bottomRightValue != undefined) ) {
 
