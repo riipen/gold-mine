@@ -2,10 +2,6 @@ import Position from "./position.js";
 
 // let movedRight;
 
-let topRightValue;
-let straightRightValue;
-let bottomRightValue;
-
 let topRightString;
 let straightRightString;
 let bottomRightString;
@@ -17,6 +13,18 @@ let bottomRightCoordinateArray;
 let topRightY;
 let straightRightY;
 let bottomRightY;
+
+let topRightValue;
+let straightRightValue;
+let bottomRightValue;
+
+let topRightTwoAheadArray = [];
+let straightRightTwoAheadArray = [];
+let bottomRightTwoAheadArray = [];
+
+let topRightFutureZeroCount;
+let straightRightFutureZeroCount;
+let bottomRightFutureZeroCount;
 
 let bestGoldMove;
 let secondToBestGoldMove;
@@ -58,8 +66,10 @@ const move = (mine, position) => {
   //       the object..? hmm...
 
   // TODO: optimize route from the first position
-  // TODO: still need to account for situations where we have two zeros in a row and the only 
-  //       higher option (n > 0) is, in fact, a repeat move...
+  // TODO: we need to check all three of the *future* possibilities for each immediate move option
+  //       to account for any sets that have two-or-more zeros and where a repeat move negates the 
+  //       possibility of choosing anything except a zero.
+
 
   if (position === undefined) {
 
@@ -84,27 +94,91 @@ const move = (mine, position) => {
     bottomRightCoordinateArray = bottomRightString.match(/\d+/g).map(str => parseInt(str));
     console.log(bottomRightCoordinateArray);
 
-    // NOTE: Keep this essentially the same! The indices for checking/utilising a mine object are the inverse of a given Position() object.
+    // Most of this is accounting for possibilities two steps ahead
 
-    // We can't access properties of an undefined object, so we need to account for that`
+    // topRight value, one step ahead / topRight array, two steps ahead
     if (position.y == 0) {
       topRightValue = undefined;
-    } else {
+      
+      topRightTwoAheadArray[0] = undefined;
+      topRightTwoAheadArray[1] = undefined;
+      topRightTwoAheadArray[2] = mine[topRightCoordinateArray[1]][topRightCoordinateArray[0] + 1];
+
+    }   
+    else if (position.y == 1) {
       topRightValue = mine[topRightCoordinateArray[1]][topRightCoordinateArray[0]];
+
+      topRightTwoAheadArray[0] = undefined;
+      topRightTwoAheadArray[1] = mine[topRightCoordinateArray[1]][topRightCoordinateArray[0] + 1];
+      topRightTwoAheadArray[2] = mine[topRightCoordinateArray[1] + 1][topRightCoordinateArray[0] + 1];
+    }
+    else {
+      topRightValue = mine[topRightCoordinateArray[1]][topRightCoordinateArray[0]];
+
+      topRightTwoAheadArray[0] = mine[topRightCoordinateArray[1] - 1][topRightCoordinateArray[0] + 1];
+      topRightTwoAheadArray[1] = mine[topRightCoordinateArray[1]][topRightCoordinateArray[0] + 1];
+      topRightTwoAheadArray[2] = mine[topRightCoordinateArray[1] + 1][topRightCoordinateArray[0] + 1];
     }
 
-    straightRightValue = mine[straightRightCoordinateArray[1]][straightRightCoordinateArray[0]];
+    // straightRight value, one step ahead / straightRight array, two steps ahead
+    if (position.y == 0) {
+      straightRightValue = mine[straightRightCoordinateArray[1]][straightRightCoordinateArray[0]];
 
+      straightRightTwoAheadArray[0] = undefined;
+      straightRightTwoAheadArray[1] = mine[straightRightCoordinateArray[1]][straightRightCoordinateArray[0] + 1];
+      straightRightTwoAheadArray[2] = mine[straightRightCoordinateArray[1] + 1][straightRightCoordinateArray[0] + 1];
+    }
+    else { 
+      straightRightValue = mine[straightRightCoordinateArray[1]][straightRightCoordinateArray[0]];
+
+      straightRightTwoAheadArray[0] = mine[straightRightCoordinateArray[1] - 1][straightRightCoordinateArray[0] + 1];
+      straightRightTwoAheadArray[1] = mine[straightRightCoordinateArray[1]][straightRightCoordinateArray[0] + 1];
+      straightRightTwoAheadArray[2] = mine[straightRightCoordinateArray[1] + 1][straightRightCoordinateArray[0] + 1];
+    } 
+
+    // bottomRight value, one step ahead / bottomRight array, two steps ahead
     if (position.y == mine.length - 1) {
       bottomRightValue = undefined;
-    } else { 
-      bottomRightValue = mine[bottomRightCoordinateArray[1]][bottomRightCoordinateArray[0]];
+
+      bottomRightTwoAheadArray[0] = mine[bottomRightCoordinateArray[1] - 1][bottomRightCoordinateArray[0] + 1];
+      bottomRightTwoAheadArray[1] = undefined;
+      bottomRightTwoAheadArray[2] = undefined;
+
     }
+    else if (position.y == mine.length - 2) {
+      bottomRightValue = mine[bottomRightCoordinateArray[1]][bottomRightCoordinateArray[0]];
+
+      bottomRightTwoAheadArray[0] = mine[bottomRightCoordinateArray[1] - 1][bottomRightCoordinateArray[0] + 1];
+      bottomRightTwoAheadArray[1] = mine[bottomRightCoordinateArray[1]][bottomRightCoordinateArray[0] + 1];
+      bottomRightTwoAheadArray[2] = undefined;
+    } 
+    else { 
+      bottomRightValue = mine[bottomRightCoordinateArray[1]][bottomRightCoordinateArray[0]];
+      
+      bottomRightTwoAheadArray[0] = mine[bottomRightCoordinateArray[1] - 1][bottomRightCoordinateArray[0] + 1];
+      bottomRightTwoAheadArray[1] = mine[bottomRightCoordinateArray[1]][bottomRightCoordinateArray[0] + 1];
+      bottomRightTwoAheadArray[2] = mine[bottomRightCoordinateArray[1] + 1][bottomRightCoordinateArray[0] + 1];
+    }
+
+    // Getting the zero counts two steps ahead
+    topRightFutureZeroCount = topRightTwoAheadArray.filter(item => item == 0).length;
+    straightRightFutureZeroCount = straightRightTwoAheadArray.filter(item => item == 0).length;
+    bottomRightFutureZeroCount = bottomRightTwoAheadArray.filter(item => item == 0).length;
 
     console.log("\nTop right: " + topRightValue);
     console.log("Straight right: " + straightRightValue);
     console.log("Bottom right: " + bottomRightValue);
+    console.log();
 
+    console.log("Two ahead arrays (topRight, straightRight, bottomRight): ");
+    console.log(topRightTwoAheadArray);
+    console.log(straightRightTwoAheadArray);
+    console.log(bottomRightTwoAheadArray);
+    console.log();
+    
+    console.log(`Top right future zero count: ${topRightFutureZeroCount}`)
+    console.log(`Straight right future zero count: ${straightRightFutureZeroCount}`)
+    console.log(`Bottom right future zero count: ${bottomRightFutureZeroCount}`)
     console.log();
 
     // NOTE: Strictly for the undefined case for top-right value
@@ -171,8 +245,7 @@ const move = (mine, position) => {
     }
 
     // Checking the positions to prevent repeats
-    // DONE: checking previous statee properly
-    // DONE: at some point, there is a repeat... but why?
+    // DONE: checking previous states properly
 
     if (currentPosition != previousPosition) {
       newY = bestGoldMove;
@@ -182,14 +255,16 @@ const move = (mine, position) => {
       currentPosition = secondCurrentPosition;
       newY = secondToBestGoldMove;
     }  
- 
-    // console.log("Best gold move?: " + bestGoldMove);
-    // console.log("Second-to-best gold move?: " + secondToBestGoldMove);
 
     console.log("Current is same as previous: " + (currentPosition == previousPosition));
 
     // Setting the previous position
     previousPosition = currentPosition;
+
+    // Reset the future possibilities arrays
+    topRightTwoAheadArray = [];
+    straightRightTwoAheadArray = [];
+    bottomRightTwoAheadArray = [];
 
     console.log("Current position (after move): " + currentPosition);
   }
