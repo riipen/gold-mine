@@ -4,8 +4,6 @@
 'Mars': 676, 
 'Jupiter': 611
 
-There were points in which I was achieving some reasonable score for the 'jupiter' integer set, but I assumed that an incomplete implementation might at least shed more light on my thought process.
-
 So, to begin, if 'position' is undefined, then it starts the mining process by simply going down one move horizontally (to the bottom right, position.y + 1).
 
 When the 'position' is defined, then all of the coordinates are defined as constants.
