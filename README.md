@@ -1,91 +1,37 @@
-# gold-mine
+# Overview of Algorithm / Approach
 
-Riipen's technical interview "Gold Mine" problem.
+'Luna': 62
+'Mars': 676
+'Jupiter' 611
 
-# Exercise
+There were points in which I was achieving some reasonable score for the 'jupiter' integer set, but I assumed that an incomplete implementation might at least shed more light on my thought process.
 
-Given a gold mine of n \* m dimensions, design an algorithm for a gold miner to collect
-as much gold as possible. Each field in this mine contains a positive integer
-which is the amount of gold in that space. The miner starts at the first column but can be at any row.
-The miner can only move right, diagonally right upwards, or diagonally right downwards. The miner
-cannot repeat it's previous move (ie. if it's previous move was diagonally right upwards, it can
-only move right or diagonally right downwards on its current move).
+So, to begin, if 'position' is undefined, then it starts the mining process by simply going down one move horizontally (to the bottom right, position.y + 1).
 
-![Gold mine diagram](https://i.imgur.com/pmb9XCA.png "Gold Mine Diagram")
+When the 'position' is defined, then all of the coordinates are defined as constants.
 
-If the miner leaves the mine for any reason (goes outside the dimensions of the mine), gold collection
-will cease and the final score will be the current score.
+Since I wasn't able to access the position properties directly, I pulled the coordinates from new Position objects and then used several methods to get arrays which would hold the coordinates. From there, values are extracted from the mine arrays directly, including the future states, which includes nine possibilities (three subsets of three). These values are to be used for checking the number of zeroes that exist two steps into the future, and with respect to valid moves from each of the following positions.
 
-If the miner lands on a section of the mine that has zero gold (an integer value of 0), gold
-collection will cease and the final score will be the current score.
+The filter() method is used to get the number of zeroes from each of these arrays, which is then used in the *incomplete* algorithm for zero-checking.
 
-# Rules
+At the top of the mine, if the topRight value is undefined, then it will select between straightRight and bottomRight coordinates.
 
-- There is no time limit
-- Use your best discretion with the design of your solution
-- You can ask questions
-- You are free to add packages, tools, or improvements as you see fit
-- We expect you write the kind of feature you would put into production, including tests and documentation as you see fit
+Next, several conditional statements are used to determine the highest values, including sorting based on where elements are equal.
 
-# Submission
+New Position ojects are initialized again to be used in getting values from the mine array. These values are then used in an algorithm that follows, which is to sort each of the relevant sets (positions, moves, or values) such that invalid 'repeat' moves are always the third best (i.e. 'worst') options.
 
-Fork this repository to your Github account. Make any of the changes you wish to make,
-then submit a pull request back up stream to this repository.
+An incomplete algorithm that utilises the the future states of the zero sets has been implemented, but it does not function as intended.
 
-If you can score in the top 10 of all time submissions, your name will be added to our
-[leader board](https://github.com/riipen/gold-mine/wiki/Leader-Board).
+Finally, it does a simple check for whether the currentPosition is equal to previousPosition.
 
-# Setup
+The 'bestGoldMove' (a coordinate) and 'previousPosition' (the current position) values are determined by the preceding steps. As long as the spanning of the mine is not out of bounds, it creates a new position at the end of each call.
 
-## Node
+# Comments
 
-1. Install `nvm` via the instructions [here](https://github.com/nvm-sh/nvm#installation-and-update), something like:
+None of the functionality of other files (validator.js, position.js, runner.js) has been modified, except for trivial changes (e.g. comments for checking).
 
-```bash
-$ curl -o- https://raw.githubusercontent.com/creationix/nvm/${VERSION}/install.sh | bash
-```
+No testing has been implemented, as I am not all that familiar with it.
 
-2. Install `node 10.16.3`:
+I was only executing the maps individually (i.e. npm start luna, npm start mars, npm start jupiter), as it does not complete when running all of the maps at once.
 
-```bash
-nvm install 10.16.3
-nvm use 10.16.3
-```
-
-4. Upgrade npm and install local dependencies:
-
-```bash
-npm install npm@latest -g
-npm install
-```
-
-## Run
-
-To run the miner through all mines:
-
-```bash
-$ npm start
-```
-
-This will give you your score per mine, as well as your final score.
-
-To run the miner through a specific mine:
-
-```bash
-$ npm run mine -- jupiter
-```
-
-This will run the miner through the "jupiter" mine. (All mines can be found
-in the `mines/` directory.)
-
-# Architecture
-
-The current naive approach to mining can be found in `src/move.js`.
-Your job will be to improve upon the existing implementation in order
-to collect as much gold as possible.
-
-You should not need to touch any of the other existing files.
-
-# Contact
-
-We encourage you to use your best discretion, but also to ask questions and communicate if you need it.
+Again, I was not able to get the zero-checking algorithm working. It seems to be the crux of being able to effectively span the 'jupiter' set. I did have moments of what seemed like success, but after many attempts at an implementation, I'm at a loss.

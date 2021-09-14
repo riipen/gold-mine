@@ -51,8 +51,11 @@ const validate = async (mine, logFile, mineScore) => {
     } else {
       
       // You must always move forward
-      if (step[0] !== position.x + 1) 
+      if (step[0] !== position.x + 1) {
+        console.log("INVALID: You didn't move forward (x + 1).");
         valid = false;
+      } 
+
 
       const validY = [
         position.y + 1,
@@ -61,15 +64,23 @@ const validate = async (mine, logFile, mineScore) => {
       ];
 
       // You must only move +1, 0 or -1 vertically in any given move
-      if (!validY.includes(step[1])) 
+      if (!validY.includes(step[1])) {
+        console.log("INVALID: Invalid move direction. Only +1, 0, -1.");
         valid = false
-
+      }
+     
       // You can't go out of bounds
-      if (step[0] > mine[0].length -1) 
+      if (step[0] > mine[0].length -1) {
+        console.log("INVALID: You went out of bounds (x).");
         valid = false;
+      } 
+ 
 
-      if (step[1] > mine.length -1) 
+      if (step[1] > mine.length -1) {
+        console.log("INVALID: You went out of bounds (y).");
         valid = false;
+      }
+ 
 
       if (step[1] === position.y + 1) {
         currentDirection = DIRECTIONS.UP;
@@ -81,8 +92,11 @@ const validate = async (mine, logFile, mineScore) => {
     }
 
     // You cannot repeat the same movement direction twice in a row
-    if (previousDirection && currentDirection && previousDirection === currentDirection) 
+    if (previousDirection && currentDirection && previousDirection === currentDirection) {
+      console.log("INVALID: Repeat movement, looks like.");
       valid = false;
+    }
+   
 
     // Breaks out of file reading
     if (!valid) 
