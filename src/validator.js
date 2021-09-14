@@ -22,7 +22,7 @@ const DIRECTIONS = {
 
 
 // So, yeah, this is going to determine whether our process is valid
-// And it tells the developer "No cheating!" if not valid...
+// And it tells the developer "No cheating!" if invalid.
 const validate = async (mine, logFile, mineScore) => {
 
   if (!mine) 
