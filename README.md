@@ -1,8 +1,8 @@
 # Overview of Algorithm / Approach
 
-'Luna': 62
-'Mars': 676
-'Jupiter' 611
+'Luna': 62, 
+'Mars': 676, 
+'Jupiter': 611
 
 There were points in which I was achieving some reasonable score for the 'jupiter' integer set, but I assumed that an incomplete implementation might at least shed more light on my thought process.
 
