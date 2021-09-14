@@ -70,7 +70,7 @@ const move = (mine, position) => {
 
   if (position != undefined) {
 
-    // these movement positions will not change for each call
+    // These movement positions will not change for each call
     const topRightY = (position && position.y - 1) || 0;
     const straightRightY = (position && position.y) || 0;
     const bottomRightY = (position && position.y + 1) || 0;
@@ -189,7 +189,7 @@ const move = (mine, position) => {
       }
     }
 
-    // if topRight is greater than straightRight and bottomRight
+    // If topRight is greater than straightRight and bottomRight
     if ( (topRightValue > straightRightValue) && (topRightValue > bottomRightValue ) ) {
       currentPosition = TR;
       bestGoldMove = topRightY;
@@ -225,7 +225,7 @@ const move = (mine, position) => {
       }
     }
 
-    // if bottomRight is greater than topRight and straightRight
+    // If bottomRight is greater than topRight and straightRight
     if ( (bottomRightValue > topRightValue) && (bottomRightValue > straightRightValue) ) {
       currentPosition = BR;
       bestGoldMove = bottomRightY;
@@ -243,7 +243,7 @@ const move = (mine, position) => {
       }
     }
 
-    // checking where topRight is equal to straightRight and both are highest
+    // Checking where topRight is equal to straightRight and both are highest
     if ( (topRightValue == straightRightValue) && (topRightValue > bottomRightValue) ) {
 
       if (previousPosition == TR) {
@@ -262,7 +262,7 @@ const move = (mine, position) => {
       thirdToBestGoldMove = bottomRightY;
     }
 
-    // checking where bottomRight is equal to straightRight and both are highest
+    // Checking where bottomRight is equal to straightRight and both are highest
     if ( (bottomRightValue == straightRightValue) && (bottomRightValue > topRightValue) ) {
 
       if (previousPosition == BR) {
@@ -281,7 +281,7 @@ const move = (mine, position) => {
       thirdCurrentPosition = TR;
     }
 
-    // checking where topRight is equal to bottomRight and both are highest
+    // Checking where topRight is equal to bottomRight and both are highest
     if ( (topRightValue == bottomRightValue) && (topRightValue > straightRightValue) ) {
       
       if (previousPosition == TR) {
@@ -398,7 +398,7 @@ const move = (mine, position) => {
       // do nothing, third is already in last place
     }
 
-    // NOTE: logic for zero-checking (2 steps ahead)
+    // NOTE: Logic for zero-checking (2 steps ahead)
     if (topRightFutureZeroCount >= 2 && bestPosition == TR) {
 
       if (secondToBestGoldMove != 0) {
