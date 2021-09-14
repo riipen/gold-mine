@@ -18,7 +18,7 @@ At the top of the mine, if the topRight value is undefined, then it will select 
 
 Next, several conditional statements are used to determine the highest values, including sorting based on where elements are equal.
 
-New Position ojects are initialized again to be used in getting values from the mine array. These values are then used in an algorithm that follows, which is to sort each of the relevant sets (positions, moves, or values) such that invalid 'repeat' moves are always the third best (i.e. 'worst') options.
+New Position objects are initialized again to be used in getting values from the mine array. These values are then used in an algorithm that follows, which is to sort each of the relevant sets (positions, moves, or values) such that invalid 'repeat' moves are always the third best (i.e. 'worst') options.
 
 An incomplete algorithm that utilises the the future states of the zero sets has been implemented, but it does not function as intended.
 
