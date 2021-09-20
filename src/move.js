@@ -1,4 +1,5 @@
 import Position from "./position.js";
+import { BestRouteCalculator } from "./BestRouteCalculator";
 
 let movedRight;
 
@@ -38,4 +39,19 @@ const move = (mine, position) => {
   return new Position(newX, newY);
 };
 
-export default move;
+const moveBySebaMaldonado = (
+  mine = [],
+  position
+) => {
+  const routeCalculator = new BestRouteCalculator(mine);
+
+  if (!position) {
+    return new Position(0, 0);
+  }
+
+  return routeCalculator.getNextBestPosition(
+    position,
+  );
+};
+
+export default moveBySebaMaldonado;
