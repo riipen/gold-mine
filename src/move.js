@@ -101,7 +101,7 @@ const move = (mine, position) => {
 		console.log(total);
 		return total, x, y;
 	}
-
+	
 	maximumGoldMined(totalGoldMined, newX, newY);
 	
 	return new Position(newX, newY);
