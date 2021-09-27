@@ -1,91 +1,29 @@
-# gold-mine
+# Gold Mine
 
-Riipen's technical interview "Gold Mine" problem.
+The requirement for this exercise was to find the maximum gold and provide the final scores for of gold. There are certain rules we have to take care of while moving the miner:
 
-# Exercise
+1- The miner can either move right, diagonally right up or diagonally right down.
+2- If the miner's next step is 0, then it should stop and return the scores.
+3- If the miner is at row 0 then right up diagonal will be undefined hence we have to handle that.
+4- If the miner is at last row then right down diagonal will be undefined hence we have to handle that.
+5- Miner cant repeat the previous move.
 
-Given a gold mine of n \* m dimensions, design an algorithm for a gold miner to collect
-as much gold as possible. Each field in this mine contains a positive integer
-which is the amount of gold in that space. The miner starts at the first column but can be at any row.
-The miner can only move right, diagonally right upwards, or diagonally right downwards. The miner
-cannot repeat it's previous move (ie. if it's previous move was diagonally right upwards, it can
-only move right or diagonally right downwards on its current move).
+# For Example:
 
-![Gold mine diagram](https://i.imgur.com/pmb9XCA.png "Gold Mine Diagram")
+9 1 5
+4 2 0
+5 6 9
 
-If the miner leaves the mine for any reason (goes outside the dimensions of the mine), gold collection
-will cease and the final score will be the current score.
+If the miner is at 1 (First row, second column) then there will be three possibilities:
+- diagonally up: As digonally up wont exist because there is no row before it hence it will avoid going there and will choose between right and diagonal down.
+- Right: The value to the right is 5 hence the miner will compare the gold between right and diagonal down, and if previous move was not right then it will take in 5.
+- Diagonally down: The value diagonally down is 0 and when compared with right it is smaller so the miner will not go to collect this gold, but incase if previous move was right then miner will not have any other option but to move diagonal down where the code will stop and whatever the miner has gained so far will be shown in output.
 
-If the miner lands on a section of the mine that has zero gold (an integer value of 0), gold
-collection will cease and the final score will be the current score.
+# Final Scores:
 
-# Rules
+After running the code you should get scores as mentioned below:
+1- Luna: 58
+2- Mars: 637
+3- Jupiter: 1111
 
-- There is no time limit
-- Use your best discretion with the design of your solution
-- You can ask questions
-- You are free to add packages, tools, or improvements as you see fit
-- We expect you write the kind of feature you would put into production, including tests and documentation as you see fit
-
-# Submission
-
-Fork this repository to your Github account. Make any of the changes you wish to make,
-then submit a pull request back up stream to this repository.
-
-If you can score in the top 10 of all time submissions, your name will be added to our
-[leader board](https://github.com/riipen/gold-mine/wiki/Leader-Board).
-
-# Setup
-
-## Node
-
-1. Install `nvm` via the instructions [here](https://github.com/nvm-sh/nvm#installation-and-update), something like:
-
-```bash
-$ curl -o- https://raw.githubusercontent.com/creationix/nvm/${VERSION}/install.sh | bash
-```
-
-2. Install `node 10.16.3`:
-
-```bash
-nvm install 10.16.3
-nvm use 10.16.3
-```
-
-4. Upgrade npm and install local dependencies:
-
-```bash
-npm install npm@latest -g
-npm install
-```
-
-## Run
-
-To run the miner through all mines:
-
-```bash
-$ npm start
-```
-
-This will give you your score per mine, as well as your final score.
-
-To run the miner through a specific mine:
-
-```bash
-$ npm run mine -- jupiter
-```
-
-This will run the miner through the "jupiter" mine. (All mines can be found
-in the `mines/` directory.)
-
-# Architecture
-
-The current naive approach to mining can be found in `src/move.js`.
-Your job will be to improve upon the existing implementation in order
-to collect as much gold as possible.
-
-You should not need to touch any of the other existing files.
-
-# Contact
-
-We encourage you to use your best discretion, but also to ask questions and communicate if you need it.
+Although the scores are not as perfect as they are suppose to be or in top 10 but I tried to keep the code as simple as possible.
