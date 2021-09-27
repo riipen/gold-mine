@@ -31,15 +31,50 @@ const move = (mine, position) => {
     let rightUp = (newY === 0) ? 0 : mine[newY-1][newX]
     let rightDown = (newY === mine.length-1) ? 0 : mine[newY+1][newX]
 
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
-  }
+    if (!movedRight && (movedRightUp || movedRightDown) && ((right > rightUp) && (right > rightDown))) {
+    
+      newY = (position && position.y) || 0;
+  
+      movedRight = true;
+      movedRightUp = false;
+      movedRightDown = false; 
+      
+    } else if (!movedRightUp && (movedRight || movedRightDown) && ( (rightUp > rightDown))){
+      //checking rightup if it hasnt been visited and if it is greater.
+      newY = (position && position.y - 1) || 0;
+  
+      movedRight = false;
+      movedRightUp = true;
+      movedRightDown = false; 
+    
+    } else {
+      //It will look into this case if previous two cases are not successful.
+  
+      if (!movedRightDown && (movedRight || movedRightUp) && rightDown !== 0) {
+       //It will check the value of rightdown to make sure it hasnt been    visited in previous state and also if its value is not zero
+        newY = (position && position.y + 1) || 0;
+  
+        movedRight = false;
+        movedRightUp = false;
+        movedRightDown = true;
+  
+      } else if (!movedRightUp && (position && position.y !== 0) && ((rightUp > right) )) {
+        //If all previous cases dont meet then we will check the right again if it is greater than any of them but hasnt been visited previously we can perform this step.
+        newY = (position && position.y -1) || 0;
+  
+        movedRightUp = true;
+        movedRight = false;
+        movedRightDown = false; 
+  
+      } else {
+        //if none of the previous steps meet then we go to this step.
+        newY = (position && position.y) || 0;
+        
+        movedRightUp = false;
+        movedRight = true;
+        movedRightDown = false; 
+      }
+    }
 
   return new Position(newX, newY);
 };
