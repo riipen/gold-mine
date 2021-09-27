@@ -70,8 +70,8 @@ const validate = async (mine, logFile, mineScore) => {
     if (previousDirection && currentDirection && previousDirection === currentDirection) valid = false;
 
     // Breaks out of file reading
-    if (!valid) lineReader.close();
-
+    
+    if (!valid) lineReader.close();    
     score += mine[step[1]][step[0]]
 
     // Move up to the valid position

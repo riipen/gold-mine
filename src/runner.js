@@ -26,7 +26,7 @@ const run = async (mine, logFile, yStart = 0) => {
 
   // log the initial position
   log(logFile, position);
-
+  
   while (position.x < mine[0].length - 1 && position.isValid(mine)) {
     if (position.x !== currentX) {
       throw new Error(

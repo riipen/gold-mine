@@ -32,6 +32,7 @@ const resetLogFile = logFile => {
  */
 const runMine = async (mine, name) => {
   const logFile = path.join(__dirname, LOG_DIR, `${name}.txt`);
+  console.log(logFile);
 
   resetLogFile(logFile);
 
