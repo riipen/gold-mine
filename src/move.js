@@ -26,7 +26,10 @@ const move = (mine, position) => {
   let newX = (position && position.x + 1) || 0;
   let newY = (position && position.y) || 0;
 
-  let newY;
+    //initializing next moves
+    let right = mine[newY][newX]
+    let rightUp = (newY === 0) ? 0 : mine[newY-1][newX]
+    let rightDown = (newY === mine.length-1) ? 0 : mine[newY+1][newX]
 
   if (!movedRight) {
     newY = (position && position.y) || 0;
