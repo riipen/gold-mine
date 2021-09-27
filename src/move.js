@@ -1,6 +1,8 @@
 import Position from "./position.js";
 
 let movedRight;
+let movedRightUp;
+let movedRightDown;
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -21,7 +23,8 @@ const move = (mine, position) => {
   //   1. Start at (0,0)
   //   2. Always moves right
 
-  const newX = (position && position.x + 1) || 0;
+  let newX = (position && position.x + 1) || 0;
+  let newY = (position && position.y) || 0;
 
   let newY;
 
