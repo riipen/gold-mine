@@ -80,12 +80,19 @@ in the `mines/` directory.)
 
 # Architecture
 
-The current naive approach to mining can be found in `src/move.js`.
-Your job will be to improve upon the existing implementation in order
-to collect as much gold as possible.
+The current improved approach to mining can be found in `src/move.js`.
+It is made by two main steps, the first is to traverse the mine from the end following the
+provided conditions to collect as much gold as possible. By that, the initial step for the miner
+will be determined in the first column of the mine. Here starts the second step which is to move
+the miner according to the path provided from the first step.
 
-You should not need to touch any of the other existing files.
+Following this approach, the scores will be:
+Riipen Gold Miner
+Mine 'jupiter' score: 6836
+Mine 'luna' score: 71
+Mine 'mars' score: 700
+Final score: 7607
 
 # Contact
 
-We encourage you to use your best discretion, but also to ask questions and communicate if you need it.
+Please feel free to contact me if you need any further information.
