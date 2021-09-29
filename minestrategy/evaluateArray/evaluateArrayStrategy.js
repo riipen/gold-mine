@@ -142,7 +142,7 @@ class EvaluateArrayStrategy {
                         this.evaluatePitfalls(currentPosition, evaluatedPosition, movements);
                     }
                 } else {
-                    itsPitfall(evaluatedPosition);
+                    this.itsPitfall(evaluatedPosition);
                 }
             }
         }
@@ -155,7 +155,7 @@ class EvaluateArrayStrategy {
     }
     evaluateCells(mine) {
         const lineSize = mine[0].length;
-        for (let j = mine[0].length - 2; j >= 0; j--) {
+        for (let j = lineSize - 2; j >= 0; j--) {
             for (let i = mine.length - 1; i >= 0; i--) {
                 let mid = this.evaluatedMine[i][j + 1].mid;
                 let up = this.evaluatedMine[i - 1] ? this.evaluatedMine[i - 1][j + 1].up : 0;
