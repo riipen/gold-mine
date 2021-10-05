@@ -89,3 +89,24 @@ You should not need to touch any of the other existing files.
 # Contact
 
 We encourage you to use your best discretion, but also to ask questions and communicate if you need it.
+
+## Test
+
+To run test:
+
+```bash
+$ npm run test
+```
+
+This will run the test cases
+
+# Implementation
+
+The `src/move.js` file was updated to:
+1. get the best initial position.
+2. determine the best route that will give the most number of gold from the first call.
+3. optimise the code so we don't keep trying to determine the best route as it has already been determined.
+
+You can not get any position from a random position as it will throw an error.
+The code only works according to the runner.js.
+It can be be improved to support dynamic positions tho. But for this test case, it's streamlined just for the runnerjs.
