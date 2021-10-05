@@ -18,7 +18,17 @@ let _MovedRight, _MovedDiagonalUp, _MovedDiagonalDown
 const move = (mine, position) => {
 
   if(!position) {
-    return new Position(0, 0);
+    let max = 0;
+    let posY = 0;
+    for(let i = 0; i < mine.length; i++){
+      let testY = new Position(0, i);
+      let calc = recursive(mine, testY, true, false, false, 0);
+      if(calc >= max){
+        max = calc;
+        posY = i;
+      }
+    }
+    return new Position(0, posY);
   }
 
   let RightScore = -1;
