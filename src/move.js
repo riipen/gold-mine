@@ -1,6 +1,6 @@
 import Position from "./position.js";
 
-let _MovedRight, _MovedDiagonalUp, _MovedDiagonalDown
+let _route;
 /**
  * Replace the logic in this function with your own custom movement algorithm.
  *
@@ -20,61 +20,26 @@ const move = (mine, position) => {
   if(!position) {
     let max = 0;
     let posY = 0;
+    let rut = {};
+    // Get best starting position by looping thru all possible Y cases.
     for(let i = 0; i < mine.length; i++){
       let testY = new Position(0, i);
-      let calc = recursive(mine, testY, true, false, false, 0);
+      let rec = recursive(mine, testY, false, false, false, 0, {});
+      let calc = rec.score;
       if(calc >= max){
+        rut = rec;
         max = calc;
         posY = i;
       }
     }
+    // Store the optimal route passed so subsequent calls would just make use of the route and not try recurssion again.
+    _route = rut.route;
     return new Position(0, posY);
+  } else {
+    // Make use of the best route which has been stored from first round.
+    let positionString = _route[position.toString()].split(',');
+    return new Position(parseInt(positionString[0]), parseInt(positionString[1]));
   }
-
-  let RightScore = -1;
-  let DiagonalUpScore = -1;
-  let DiagonalDownScore = -1;
-
-  // move right
-  let moveRightPosition = new Position(position.x + 1, position.y);
-  if(!_MovedRight){
-    RightScore = recursive(mine, moveRightPosition, true, false, false, 0);
-  }
-  
-  // move diagonal up
-  let moveDiagonalUpPosition = new Position(position.x + 1, position.y + 1);
-  if(!_MovedDiagonalUp){
-    DiagonalUpScore = recursive(mine, moveDiagonalUpPosition, false, true, false, 0);
-  }
-
-  // move diagonal down
-  let moveDiagonalDownPosition = new Position(position.x + 1, position.y - 1);
-  if(!_MovedDiagonalDown){
-    DiagonalDownScore = recursive(mine, moveDiagonalDownPosition, false, false, true, 0);
-  }
-
-  // console.log({RightScore, DiagonalUpScore, DiagonalDownScore})
-
-  if(RightScore>= DiagonalUpScore && RightScore>= DiagonalDownScore){
-    _MovedRight = true;
-    _MovedDiagonalUp = false;
-    _MovedDiagonalDown = false;
-    return moveRightPosition
-  }
-  if(DiagonalUpScore>= RightScore && DiagonalUpScore>= DiagonalDownScore){
-    _MovedRight = false;
-    _MovedDiagonalUp = true;
-    _MovedDiagonalDown = false;
-    return moveDiagonalUpPosition
-  }
-  if(DiagonalDownScore>= RightScore && DiagonalDownScore>= DiagonalUpScore){
-    _MovedRight = false;
-    _MovedDiagonalUp = false;
-    _MovedDiagonalDown = true;
-    return moveDiagonalDownPosition
-  }
-
-  // return Math.max(RightScore, DiagonalUpScore, DiagonalDownScore);
 
 };
 
@@ -86,41 +51,54 @@ const move = (mine, position) => {
  * @param  {array} mine - A n x m multidimensional array respresenting the mine.
  * @param  {object} givenposition - The current position of the miner, will be undefined on the first move.
  *
- * @return {Position} The new position of the miner.
+ * @return {object} An Object containing the max gold and route passed.
  */
-const recursive = (mine, givenposition, movedRight, movedDiagonalUp, movedDiagonalDown, score) => {
+const recursive = (mine, givenposition, movedRight, movedDiagonalUp, movedDiagonalDown, score, route) => {
   let position = new Position(givenposition.x, givenposition.y);
 
   if(!position.isValid(mine)){
-    return score;
+    return {score, route};
   } 
 
-  // console.log(position)
   score += mine[position.y][position.x];
 
-  let RightScore = score;
-  let DiagonalUpScore = score;
-  let DiagonalDownScore = score;
+  let RightScore = {score, route};
+  let DiagonalUpScore = {score, route};
+  let DiagonalDownScore = {score, route};
 
+  // If previous route was not right, try going right.
   if(!movedRight) {
     let moveRightPosition = new Position(position.x + 1, position.y);
     if(moveRightPosition.isValid(mine)){
-      RightScore = recursive(mine, moveRightPosition, true, false, false, score);
+      let nex = {...route};
+      nex[position.toString()] = moveRightPosition.toString();
+      RightScore = recursive(mine, moveRightPosition, true, false, false, score, nex);
     }
   }
+  // If previous route was not diagonal up, try going diagonal up.
   if(!movedDiagonalUp) {
     let moveDiagonalUpPosition = new Position(position.x + 1, position.y + 1);
     if(moveDiagonalUpPosition.isValid(mine)){
-      DiagonalUpScore = recursive(mine, moveDiagonalUpPosition, false, true, false, score);
+      let nex = {...route};
+      nex[position.toString()] = moveDiagonalUpPosition.toString();
+      DiagonalUpScore = recursive(mine, moveDiagonalUpPosition, false, true, false, score, nex);
     }
   }
+  // If previous route was not diagonal down, try going diagonal down.
   if(!movedDiagonalDown) {
     let moveDiagonalDownPosition = new Position(position.x + 1, position.y - 1);
     if(moveDiagonalDownPosition.isValid(mine)){
-      DiagonalDownScore = recursive(mine, moveDiagonalDownPosition, false, false, true, score);
+      let nex = {...route};
+      nex[position.toString()] = moveDiagonalDownPosition.toString();
+      DiagonalDownScore = recursive(mine, moveDiagonalDownPosition, false, false, true, score, nex);
     } 
   }
-  return Math.max(RightScore, DiagonalUpScore, DiagonalDownScore);
+  
+  // Return the maximum score together with the route it took. So we don't need to come here again
+  let max = Math.max(RightScore.score, DiagonalUpScore.score, DiagonalDownScore.score);
+  if(RightScore.score === max) return RightScore;
+  if(DiagonalUpScore.score === max) return DiagonalUpScore;
+  if(DiagonalDownScore.score === max) return DiagonalDownScore;
 }
 
 export default move;
