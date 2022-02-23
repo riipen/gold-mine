@@ -1,6 +1,7 @@
 import Position from "./position.js";
+import MineOracle from "./oracle.js"
 
-let movedRight;
+let oracle;
 
 /**
  * Replace the logic in this function with your own custom movement algorithm.
@@ -17,25 +18,11 @@ let movedRight;
  * @return {Position} The new position of the miner.
  */
 const move = (mine, position) => {
-  // TODO: write logic for miner. The current approach naive approach is to simply:
-  //   1. Start at (0,0)
-  //   2. Always moves right
-
-  const newX = (position && position.x + 1) || 0;
-
-  let newY;
-
-  if (!movedRight) {
-    newY = (position && position.y) || 0;
-
-    movedRight = true;
-  } else {
-    newY = (position && position.y + 1) || 0;
-
-    movedRight = false;
+  if(typeof position === 'undefined'){
+    oracle = new MineOracle(mine);
   }
 
-  return new Position(newX, newY);
+  return oracle.getNextStep(position);
 };
 
 export default move;

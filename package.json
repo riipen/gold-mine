@@ -22,7 +22,8 @@
   },
   "scripts": {
     "start": "node -r esm --no-warnings ./index.js",
-    "mine": "node -r esm --no-warnings ./index.js"
+    "mine": "node -r esm --no-warnings ./index.js",
+    "test": "./node_modules/.bin/mocha --require esm"
   },
   "main": "./index.js",
   "engines": {
@@ -31,6 +32,7 @@
   "type": "module",
   "dependencies": {
     "esm": "^3.2.25",
+    "mocha": "^9.2.1",
     "require-directory": "^2.1.1"
   }
 }
