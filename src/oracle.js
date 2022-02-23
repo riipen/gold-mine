@@ -12,10 +12,25 @@ class MineOracle {
         this.crunchMine(mine);
     }
 
+    /**
+     * Let's me check the mine without worrying about if the location is valid or not, basically. 0 if out of bounds
+     * or 0, and then the value if it's got a value.
+     * 
+     * This is reasonable, since we act the same way on 0 as we do as out of bounds. If that changes, so should this.
+     */
     safeMine(y,x){
         return new Position(x,y).isValid(this.mine) ? this.mine[y][x] : 0;
     }
 
+    /**
+     * Processes the mine into a crunchedMine. This is sort of the meat of the solution.
+     * Basically, don't know what the best we can get from the mine is going forward; something that looks really
+     * good, like a zig zag of 9s, might lock us into a bad spot down the line. But that same zig zag of 9s at the
+     * _end_ can't do that. 
+     * So we go through it backwards, keeping track of the highest potential endpoints instead of the highest potential start
+     * points. With that info, we can basically signpost where the highest value is earlier in the mine, all the way to the 'entrance.'
+     * @param {array} mine 
+     */
     crunchMine(mine) {
         for(let y = mine.length-1; y>=0;y--){
             this.crunchedMine[y] = [];
@@ -29,7 +44,13 @@ class MineOracle {
     }
 
     /**
-     * expected value means if you take x move here, what is the best result you can end up with?
+     * The object has three keys corresponding to the moves you can make, the contents of which
+     * tell you the best value you can get from this position if you take that move.
+     * Honestly, they should probably be the enums defined in the oracleMoves file.
+     * 
+     * @param {*} y 
+     * @param {*} x 
+     * @returns 
      */
     getExpectedValuesForPosition(y,x){
         const expectedValues = {};
@@ -71,6 +92,11 @@ class MineOracle {
             + this.safeMine(y,x)
     }
 
+    /**
+     * Returns the best starting position for the mine
+     * 
+     * @returns Position
+     */
     getStartingStep(){
         let curMax = -1;
         let curY = 0;
@@ -87,6 +113,17 @@ class MineOracle {
         return new Position(0,curY)
     }
 
+    /**
+     * Based on the crunching, returns the best move for the given position
+     * Prefers arbitrarily to go to a lower y in the cases of ties.
+     * Also keeps track of the last step to ensure it isn't returning an invalid
+     * step
+     * 
+     * Will return the best starting position for the mine if given no position
+     * 
+     * @param Position position 
+     * @returns Position
+     */
     getNextStep(position) {
         if( typeof position === 'undefined' ){
             return this.getStartingStep();
@@ -100,50 +137,52 @@ class MineOracle {
                 case NONE:
                     // assume up is the best
                     thisMove = UP;
-                    newY = position.y - 1;
                     if( crunchedPosition.up < crunchedPosition.mid ){
                         if ( crunchedPosition.mid < crunchedPosition.down ){
                             thisMove = DOWN;
-                            newY = position.y + 1;
                         } else {
                             thisMove = MID;
-                            newY = position.y;
                         }
                     } else if ( crunchedPosition.up < crunchedPosition.down ){
                         thisMove = DOWN;
-                        newY = position.y + 1;
                     }
 
                     break;
                 case UP:
                     if( crunchedPosition.down < crunchedPosition.mid ){
                         thisMove = MID;
-                        newY = position.y;
                     } else {
                         thisMove = DOWN;
-                        newY = position.y + 1;
                     }
                     break;
                 case MID:
                     if( crunchedPosition.down < crunchedPosition.up ){
                         thisMove = UP;
-                        newY = position.y - 1;
                     } else {
                         thisMove = DOWN;
-                        newY = position.y + 1;
                     }
                     break;
                 case DOWN:
                     if( crunchedPosition.mid < crunchedPosition.up ){
                         thisMove = UP;
-                        newY = position.y - 1;
                     } else {
                         thisMove = MID;
-                        newY = position.y;
                     }
                     break;
             }
             
+            switch(thisMove){
+                case UP:
+                    newY = position.y - 1;
+                    break;
+                case MID:
+                    newY = position.y;
+                    break;
+                case DOWN:
+                    newY = position.y + 1;
+                    break;
+            }
+
             this.lastMove = thisMove;
             return new Position( newX, newY )
         }
