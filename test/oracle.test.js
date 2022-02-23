@@ -1,18 +1,18 @@
 import MineOracle from "../src/oracle";
 import Position from "../src/position";
 import {NONE,UP,DOWN,MID} from "../src/oracleMoves";
-const assert = require('assert');
+import * as assert from "assert";
 
 let mines = {
     "alef":[
-        [4,5,6], //
+        [4,5,6],
         [1,0,1],
-        [9,3,2]
+        [9,3,2],
     ],
     "bet":[
         [1,2, 3, 4],
         [5,6, 7, 8],
-        [9,10,11,12]
+        [9,10,11,12],
     ]
 };
 
@@ -56,101 +56,94 @@ describe("MineOracle", () => {
     })
 
     describe("getUp", () => {
-        let betOracle;
+        let oracle;
         before( ( cb ) => {
-            betOracle = new MineOracle(mines.bet);
+            oracle = new MineOracle(mines.bet);
             return cb(null);
         })
 
         it("Returns the highest possible total from the up move", () => {
             const x = 0;
             const y = 1;
-            assert.deepStrictEqual( betOracle.getUp(y,x), crunchedMines.bet[y][x].up );
+            assert.deepStrictEqual( oracle.getUp(y,x), crunchedMines.bet[y][x].up );
 
         })
 
         it("Deals with being at the edge of the mine", () => {
             const x = 0;
             const y = mines.bet.length-1;
-            assert.deepStrictEqual( betOracle.getUp(y,x), crunchedMines.bet[y][x].up );
+            assert.deepStrictEqual( oracle.getUp(y,x), crunchedMines.bet[y][x].up );
         })
 
         it("Deals with being at the top edge of the mine", () => {
             const x = 1;
             const y = 0;
-            assert.deepStrictEqual( betOracle.getUp(y,x), crunchedMines.bet[y][x].up );
+            assert.deepStrictEqual( oracle.getUp(y,x), crunchedMines.bet[y][x].up );
         })
     })
 
     describe("getMid", () => {
-        let betOracle;
+        let oracle;
         before( ( cb ) => {
-            betOracle = new MineOracle(mines.bet);
+            oracle = new MineOracle(mines.bet);
             return cb(null);
         })
 
         it("Returns the highest possible total from the mid move", () => {
             const x = 0;
             const y = 1;
-            assert.deepStrictEqual( betOracle.getMid(y,x), crunchedMines.bet[y][x].mid );
+            assert.deepStrictEqual( oracle.getMid(y,x), crunchedMines.bet[y][x].mid );
 
         })
 
         it("Deals with being at the edge of the mine", () => {
             const x = 0;
             const y = mines.bet.length-1;
-            assert.deepStrictEqual( betOracle.getMid(y,x), crunchedMines.bet[y][x].mid );
+            assert.deepStrictEqual( oracle.getMid(y,x), crunchedMines.bet[y][x].mid );
         })
 
         it("Deals with being at the top edge of the mine", () => {
             const x = 1;
             const y = 0;
-            assert.deepStrictEqual( betOracle.getMid(y,x), crunchedMines.bet[y][x].mid );
+            assert.deepStrictEqual( oracle.getMid(y,x), crunchedMines.bet[y][x].mid );
         })
     })
 
     describe("getDown", () => {
-        let betOracle;
-        before( ( cb ) => {
-            betOracle = new MineOracle(mines.bet);
-            return cb(null);
+        let oracle;
+        before( () => {
+            oracle = new MineOracle(mines.bet);
         })
 
         it("Returns the highest possible total from the down move", () => {
             const x = 0;
             const y = 1;
-            assert.deepStrictEqual( betOracle.getDown(y,x), crunchedMines.bet[y][x].down );
+            assert.deepStrictEqual( oracle.getDown(y,x), crunchedMines.bet[y][x].down );
 
         })
 
         it("Deals with being at the edge of the mine", () => {
             const x = 0;
             const y = mines.bet.length-1;
-            assert.deepStrictEqual( betOracle.getDown(y,x), crunchedMines.bet[y][x].down );
+            assert.deepStrictEqual( oracle.getDown(y,x), crunchedMines.bet[y][x].down );
         })
 
         it("Deals with being at the bottom edge of the mine", () => {
             const x = 1;
             const y = 0;
-            assert.deepStrictEqual( betOracle.getDown(y,x), crunchedMines.bet[y][x].down );
+            assert.deepStrictEqual( oracle.getDown(y,x), crunchedMines.bet[y][x].down );
         })
     })
 
     describe("crunchMine", () => {
-        let oracle;
-        before( ( cb ) => {
-            oracle = new MineOracle(mines.alef);
-            return cb(null);
-        })
-
         it("Crunches alef the way I expect", () => {
-            let oracleAlef = new MineOracle(mines.alef);
-            assert.deepStrictEqual(oracleAlef.crunchedMine,crunchedMines.alef)
+            let oracle = new MineOracle(mines.alef);
+            assert.deepStrictEqual(oracle.crunchedMine,crunchedMines.alef)
         })
 
         it("Crunches bet the way I expect", () => {
-            let oracleBet = new MineOracle(mines.bet);
-            assert.deepStrictEqual(oracleBet.crunchedMine,crunchedMines.bet)
+            let oracle = new MineOracle(mines.bet);
+            assert.deepStrictEqual(oracle.crunchedMine,crunchedMines.bet)
         })
     })
 
@@ -172,7 +165,7 @@ describe("MineOracle", () => {
         })
     })
 
-    describe.only("getNextStep", () => {
+    describe("getNextStep", () => {
         let oracle = new MineOracle(mines.bet)
         it("Returns the first step when given no position", () => {
             let expectedPosition = new Position(0,2)
