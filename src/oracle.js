@@ -1,11 +1,7 @@
 import Position from "./position";
-
+import { NONE,UP,DOWN,MID } from "./oracleMoves";
 // the main idea here is that we don't rely on just the info the miner might have
 // we have access to the full mine data, we should use it
-const UP = Symbol("up");
-const MID = Symbol("MID");
-const DOWN = Symbol("DOWN");
-const NONE = Symbol("NONE");
 
 class MineOracle {
     constructor(mine){

@@ -1,5 +1,6 @@
 import MineOracle from "../src/oracle";
 import Position from "../src/position";
+import {NONE,UP,DOWN,MID} from "../src/oracleMoves";
 const assert = require('assert');
 
 let mines = {
@@ -171,7 +172,7 @@ describe("MineOracle", () => {
         })
     })
 
-    describe("getNextStep", () => {
+    describe.only("getNextStep", () => {
         let oracle = new MineOracle(mines.bet)
         it("Returns the first step when given no position", () => {
             let expectedPosition = new Position(0,2)
@@ -180,25 +181,37 @@ describe("MineOracle", () => {
             assert.deepStrictEqual(returnedPosition.y,expectedPosition.y)
         })
 
-        it("Returns the best next step", () => {
-            let currentPosition = new Position(1,1)
+        it("Doesn't take into account directionality for the first step", () => {
+            oracle.lastMove = NONE;
+            let currentPosition = new Position(0,1);
+            let expectedPosition = new Position(1,1)
+            let returnedPosition = oracle.getNextStep(currentPosition);
+            assert.deepStrictEqual(returnedPosition.x,expectedPosition.x)
+            assert.deepStrictEqual(returnedPosition.y,expectedPosition.y)
+        })
+
+        it("Won't go up if up was the last move", () => {
+            oracle.lastMove = UP;
+            let currentPosition = new Position(1,2);
             let expectedPosition = new Position(2,2)
             let returnedPosition = oracle.getNextStep(currentPosition);
             assert.deepStrictEqual(returnedPosition.x,expectedPosition.x)
             assert.deepStrictEqual(returnedPosition.y,expectedPosition.y)
         })
 
-        it("Returns position that is out of bounds at the end", () => {
-            let currentPosition = new Position(3,1)
-            let expectedPosition = new Position(4,0)
+        it("Won't go mid if mid was the last move", () => {
+            oracle.lastMove = MID;
+            let currentPosition = new Position(0,1);
+            let expectedPosition = new Position(1,2)
             let returnedPosition = oracle.getNextStep(currentPosition);
             assert.deepStrictEqual(returnedPosition.x,expectedPosition.x)
             assert.deepStrictEqual(returnedPosition.y,expectedPosition.y)
         })
 
-        it("Returns the uppest best step when there is a tie", () => {
-            let currentPosition = new Position(0,2)
-            let expectedPosition = new Position(1,1)
+        it("Won't go down if down was the last move", () => {
+            oracle.lastMove = DOWN;
+            let currentPosition = new Position(1,1);
+            let expectedPosition = new Position(2,1)
             let returnedPosition = oracle.getNextStep(currentPosition);
             assert.deepStrictEqual(returnedPosition.x,expectedPosition.x)
             assert.deepStrictEqual(returnedPosition.y,expectedPosition.y)
